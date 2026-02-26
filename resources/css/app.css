@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
@@ -6,6 +7,899 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+    
+    /* ============================================
+       CAMPUSEATS COLOR PALETTE
+       Food-vendor themed colors
+       ============================================ */
+    
+    /* Primary Brand Colors - Vibrant Orange/Red for food */
+    --color-primary-50: #fff7ed;
+    --color-primary-100: #ffedd5;
+    --color-primary-200: #fed7aa;
+    --color-primary-300: #fdba74;
+    --color-primary-400: #fb923c;
+    --color-primary-500: #f97316;
+    --color-primary-600: #ea580c;
+    --color-primary-700: #c2410c;
+    --color-primary-800: #9a3412;
+    --color-primary-900: #7c2d12;
+    
+    /* Secondary Colors - Warm Yellow for accents */
+    --color-secondary-50: #fefce8;
+    --color-secondary-100: #fef9c3;
+    --color-secondary-200: #fef08a;
+    --color-secondary-300: #fde047;
+    --color-secondary-400: #facc15;
+    --color-secondary-500: #eab308;
+    --color-secondary-600: #ca8a04;
+    --color-secondary-700: #a16207;
+    --color-secondary-800: #854d0e;
+    --color-secondary-900: #713f12;
+    
+    /* Success Colors */
+    --color-success-50: #f0fdf4;
+    --color-success-500: #22c55e;
+    --color-success-600: #16a34a;
+    
+    /* Warning Colors */
+    --color-warning-50: #fffbeb;
+    --color-warning-400: #fbbf24;
+    --color-warning-600: #d97706;
+    
+    /* Error Colors */
+    --color-error-50: #fef2f2;
+    --color-error-500: #ef4444;
+    --color-error-600: #dc2626;
+}
+
+/* ============================================
+   CAMPUSEATS BASE STYLES
+   ============================================ */
+
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+.fw-800 { 
+    font-weight: 800; 
+}
+
+/* ============================================
+   DYNAMIC VENDOR-STYLE COMPONENTS
+   ============================================ */
+
+/* Dynamic Menu Card with Hover Effects */
+.menu-card-dynamic {
+    @apply bg-white rounded-xl shadow-md overflow-hidden cursor-pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.menu-card-dynamic:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(234, 88, 12, 0.2) !important;
+}
+
+/* Image Zoom on Hover */
+.menu-card-dynamic img {
+    transition: transform 0.5s ease;
+}
+
+.menu-card-dynamic:hover img {
+    transform: scale(1.1);
+}
+
+/* Glassmorphism effect for vendor cards */
+.vendor-card-post {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    @apply rounded-xl shadow-lg;
+}
+
+/* Food-themed gradient backgrounds */
+.food-gradient-orange {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+}
+
+.food-gradient-warm {
+    background: linear-gradient(135deg, #fb923c 0%, #f59e0b 100%);
+}
+
+.food-gradient-sunset {
+    background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+}
+
+/* ============================================
+   CUSTOM UTILITY CLASSES
+   ============================================ */
+
+/* Brand Button Styles - Food themed */
+.btn-primary {
+    @apply bg-orange-600 text-white px-6 py-3 rounded-lg hover:bg-orange-700 font-semibold;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(234, 88, 12, 0.2);
+}
+
+.btn-primary:hover {
+    box-shadow: 0 0 20px rgba(234, 88, 12, 0.5);
+    transform: scale(1.05);
+}
+
+.btn-secondary {
+    @apply bg-yellow-500 text-gray-900 px-6 py-3 rounded-lg hover:bg-yellow-600 font-semibold;
+    transition: all 0.3s ease;
+}
+
+.btn-success {
+    @apply bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 font-semibold;
+    transition: all 0.3s ease;
+}
+
+.btn-danger {
+    @apply bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 font-semibold;
+    transition: all 0.3s ease;
+}
+
+/* Card Styles - Enhanced for food vendors */
+.card {
+    @apply bg-white rounded-xl shadow-lg p-6;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-hover {
+    @apply bg-white rounded-xl shadow-lg hover:shadow-2xl p-6;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-hover:hover {
+    transform: translateY(-5px);
+}
+
+/* Navigation Styles - Food themed */
+.nav-link {
+    @apply text-gray-700 hover:text-orange-600 px-3 py-2 rounded-md text-sm font-medium;
+    transition: all 0.3s ease;
+}
+
+.nav-link-active {
+    @apply text-orange-600 border-b-2 border-orange-600 px-3 py-2 text-sm font-semibold;
+}
+
+/* Form Input Styles */
+.form-input {
+    @apply mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500;
+    transition: all 0.3s ease;
+}
+
+.form-input:focus {
+    box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.1);
+}
+
+.form-label {
+    @apply block text-sm font-semibold text-gray-700 mb-1;
+}
+
+.form-error {
+    @apply text-red-600 text-sm mt-1 font-medium;
+}
+
+/* Badge Styles - Food themed */
+.badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-bold;
+}
+
+.badge-success {
+    @apply bg-green-100 text-green-800;
+}
+
+.badge-warning {
+    @apply bg-yellow-100 text-yellow-800;
+}
+
+.badge-danger {
+    @apply bg-red-100 text-red-800;
+}
+
+.badge-info {
+    @apply bg-blue-100 text-blue-800;
+}
+
+.badge-available {
+    @apply bg-green-100 text-green-800;
+    animation: pulse-subtle 2s ease-in-out infinite;
+}
+
+.badge-sold-out {
+    @apply bg-gray-100 text-gray-600;
+}
+
+/* Hero Section - Food themed */
+.hero-gradient {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 50%, #fb923c 100%);
+}
+
+.hero-gradient-alt {
+    background: linear-gradient(135deg, #ff6b6b 0%, #f97316 50%, #feca57 100%);
+}
+
+/* Vendor Card - Enhanced */
+.vendor-card {
+    @apply bg-white rounded-xl shadow-lg hover:shadow-2xl overflow-hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 2px solid transparent;
+}
+
+.vendor-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    border-color: #f97316;
+}
+
+/* Stats Card - Food themed */
+.stat-card {
+    @apply bg-white rounded-xl shadow-lg p-6;
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+}
+
+.stat-icon {
+    @apply flex-shrink-0 rounded-xl p-3;
+}
+
+.stat-icon-primary {
+    @apply bg-orange-100 text-orange-600;
+}
+
+.stat-icon-warning {
+    @apply bg-yellow-100 text-yellow-600;
+}
+
+.stat-icon-success {
+    @apply bg-green-100 text-green-600;
+}
+
+/* ============================================
+   FOOD-THEMED ANIMATIONS
+   ============================================ */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes pulse-subtle {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.8;
+    }
+}
+
+@keyframes bounce-gentle {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-out;
+}
+
+.animate-slide-in-right {
+    animation: slideInRight 0.5s ease-out;
+}
+
+.animate-bounce-gentle {
+    animation: bounce-gentle 2s ease-in-out infinite;
+}
+
+/* ============================================
+   FOOD MENU ITEM STYLES
+   ============================================ */
+
+.menu-item-card {
+    @apply bg-white border-2 border-gray-200 rounded-xl p-5 hover:border-orange-400;
+    transition: all 0.3s ease;
+}
+
+.menu-item-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(234, 88, 12, 0.15);
+}
+
+.menu-item-image {
+    @apply w-full h-48 object-cover rounded-lg;
+    transition: transform 0.5s ease;
+}
+
+.menu-item-card:hover .menu-item-image {
+    transform: scale(1.05);
+}
+
+.price-tag {
+    @apply text-2xl font-bold text-orange-600;
+}
+
+/* ============================================
+   ORDER STATUS STYLES
+   ============================================ */
+
+.order-status-pending {
+    @apply bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-r-lg;
+}
+
+.order-status-ready {
+    @apply bg-green-50 border-l-4 border-green-500 p-4 rounded-r-lg;
+    animation: pulse-subtle 2s ease-in-out infinite;
+}
+
+.order-status-completed {
+    @apply bg-gray-50 border-l-4 border-gray-400 p-4 rounded-r-lg;
+}
+
+/* ============================================
+   RESPONSIVE UTILITIES
+   ============================================ */
+
+.mobile-menu-button {
+    @apply md:hidden inline-flex items-center justify-center p-2 rounded-lg text-gray-700 hover:text-orange-600 hover:bg-orange-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-orange-500;
+    transition: all 0.3s ease;
+}
+
+/* ============================================
+   SPECIAL EFFECTS
+   ============================================ */
+
+/* Floating animation for featured items */
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.float-animation {
+    animation: float 3s ease-in-out infinite;
+}
+
+/* Shimmer effect for loading states */
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+.shimmer {
+    background: linear-gradient(to right, #f6f7f8 0%, #edeef1 20%, #f6f7f8 40%, #f6f7f8 100%);
+    background-size: 1000px 100%;
+    animation: shimmer 2s linear infinite;
+}
+
+/* Glow effect for special offers */
+.glow-orange {
+    box-shadow: 0 0 20px rgba(234, 88, 12, 0.5);
+}
+
+.glow-yellow {
+    box-shadow: 0 0 20px rgba(234, 179, 8, 0.5);
+}
+
+/* ============================================
+   CAMPUSEATS SPECIFIC COMPONENTS
+   ============================================ */
+
+.campuseats-logo {
+    @apply text-2xl font-extrabold;
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.featured-badge {
+    @apply absolute top-2 right-2 bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 py-1 rounded-full text-xs font-bold;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.vendor-rating {
+    @apply flex items-center space-x-1 text-yellow-500;
+}
+
+.quick-action-btn {
+    @apply flex items-center justify-center px-4 py-3 border-2 border-orange-200 text-sm font-semibold rounded-xl text-gray-700 bg-white hover:bg-orange-50 hover:border-orange-400;
+    transition: all 0.3s ease;
+}
+
+.quick-action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(234, 88, 12, 0.2);
+}
+
+
+/* ============================================
+   DYNAMIC VENDOR-STYLE EFFECTS
+   ============================================ */
+
+/* Font Weight Utilities */
+.fw-800 {
+    font-weight: 800;
+}
+
+/* Dynamic Menu Card with Hover Effects */
+.menu-card-dynamic {
+    @apply bg-white rounded-lg shadow-md overflow-hidden cursor-pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.menu-card-dynamic:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Image Zoom Effect on Hover */
+.menu-card-dynamic img {
+    transition: transform 0.5s ease;
+}
+
+.menu-card-dynamic:hover img {
+    transform: scale(1.1);
+}
+
+/* Glassmorphism Effect for Cards */
+.vendor-card-post {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+}
+
+/* Vendor Card with Dynamic Effects */
+.vendor-card-enhanced {
+    @apply bg-white rounded-xl shadow-lg overflow-hidden;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+}
+
+.vendor-card-enhanced::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #f093fb, #f5576c);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.vendor-card-enhanced:hover::before {
+    transform: scaleX(1);
+}
+
+.vendor-card-enhanced:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+}
+
+/* Floating Animation */
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.float-animation {
+    animation: float 3s ease-in-out infinite;
+}
+
+/* Pulse Animation for Badges */
+@keyframes pulse-badge {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.05);
+    }
+}
+
+.badge-pulse {
+    animation: pulse-badge 2s ease-in-out infinite;
+}
+
+/* Shimmer Effect for Loading */
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+.shimmer {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 1000px 100%;
+    animation: shimmer 2s infinite;
+}
+
+/* Gradient Text */
+.gradient-text {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* CampusEats Brand Gradients */
+.campuseats-gradient {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.campuseats-gradient-alt {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.campuseats-hero {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+}
+
+/* Smooth Scroll */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Interactive Icon Bounce */
+.icon-bounce:hover {
+    animation: bounce 0.5s ease;
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* Neon Glow Effect */
+.neon-glow {
+    text-shadow: 0 0 10px rgba(79, 70, 229, 0.8),
+                 0 0 20px rgba(79, 70, 229, 0.6),
+                 0 0 30px rgba(79, 70, 229, 0.4);
+}
+
+/* Stagger Animation for Lists */
+.stagger-item {
+    opacity: 0;
+    animation: staggerFadeIn 0.5s ease forwards;
+    transform: translateY(20px);
+}
+
+@keyframes staggerFadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.stagger-item:nth-child(1) { animation-delay: 0.1s; }
+.stagger-item:nth-child(2) { animation-delay: 0.2s; }
+.stagger-item:nth-child(3) { animation-delay: 0.3s; }
+.stagger-item:nth-child(4) { animation-delay: 0.4s; }
+.stagger-item:nth-child(5) { animation-delay: 0.5s; }
+.stagger-item:nth-child(6) { animation-delay: 0.6s; }
+
+/* Scale on Hover */
+.scale-hover {
+    transition: transform 0.3s ease;
+}
+
+.scale-hover:hover {
+    transform: scale(1.05);
+}
+
+
+/* ============================================
+   DYNAMIC VENDOR-STYLE EFFECTS
+   CampusEats Branding
+   ============================================ */
+
+/* Dynamic Menu Card with Hover Effects */
+.menu-card-dynamic {
+    @apply transition-all duration-300 ease-in-out cursor-pointer overflow-hidden;
+    transform: translateY(0);
+}
+
+.menu-card-dynamic:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Image Zoom on Hover */
+.menu-card-dynamic img {
+    @apply transition-transform duration-500 ease-in-out;
+}
+
+.menu-card-dynamic:hover img {
+    transform: scale(1.1);
+}
+
+/* Glassmorphism Effect for Vendor Cards */
+.vendor-card-glass {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    @apply rounded-lg shadow-lg;
+}
+
+/* Button Pulse Animation */
+.btn-pulse {
+    @apply transition-all duration-300;
+}
+
+.btn-pulse:hover {
+    box-shadow: 0 0 15px rgba(79, 70, 229, 0.5);
+    transform: scale(1.05);
+}
+
+/* Floating Animation for Featured Items */
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.float-animation {
+    animation: float 3s ease-in-out infinite;
+}
+
+/* Shimmer Effect for Loading */
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+.shimmer {
+    background: linear-gradient(to right, #f6f7f8 0%, #edeef1 20%, #f6f7f8 40%, #f6f7f8 100%);
+    background-size: 1000px 100%;
+    animation: shimmer 2s linear infinite;
+}
+
+/* Vendor Badge with Glow */
+.vendor-badge-glow {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    animation: glow 2s ease-in-out infinite;
+}
+
+@keyframes glow {
+    0%, 100% {
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+    50% {
+        box-shadow: 0 4px 25px rgba(102, 126, 234, 0.6);
+    }
+}
+
+/* Price Tag Style */
+.price-tag {
+    @apply inline-block px-3 py-1 rounded-full text-lg font-bold;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    box-shadow: 0 4px 10px rgba(245, 87, 108, 0.3);
+}
+
+/* Available Badge with Pulse */
+.available-badge {
+    @apply inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800;
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Sold Out Badge */
+.sold-out-badge {
+    @apply inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800 relative;
+}
+
+.sold-out-badge::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #dc2626;
+    transform: translateY(-50%);
+}
+
+/* Vendor Hero Section with Gradient Animation */
+.vendor-hero-animated {
+    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+}
+
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Food Category Pills */
+.category-pill {
+    @apply inline-block px-4 py-2 rounded-full text-sm font-medium transition-all duration-300;
+    background: white;
+    border: 2px solid #e5e7eb;
+}
+
+.category-pill:hover {
+    background: #4f46e5;
+    color: white;
+    border-color: #4f46e5;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+/* Vendor Stats Counter Animation */
+.stat-counter {
+    @apply text-4xl font-bold;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Order Notification Bounce */
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.notification-bounce {
+    animation: bounce 1s ease-in-out infinite;
+}
+
+/* Vendor Card Tilt Effect */
+.vendor-card-tilt {
+    @apply transition-transform duration-300;
+    transform-style: preserve-3d;
+}
+
+.vendor-card-tilt:hover {
+    transform: perspective(1000px) rotateY(5deg);
+}
+
+/* Search Bar Focus Effect */
+.search-bar-focus {
+    @apply transition-all duration-300;
+}
+
+.search-bar-focus:focus {
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+    border-color: #4f46e5;
+    transform: scale(1.02);
+}
+
+/* Menu Item Image Overlay */
+.menu-item-overlay {
+    @apply absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 transition-opacity duration-300;
+}
+
+.menu-card-dynamic:hover .menu-item-overlay {
+    opacity: 1;
+}
+
+/* Vendor Location Pin Animation */
+@keyframes pinDrop {
+    0% {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    50% {
+        transform: translateY(5px);
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.location-pin {
+    animation: pinDrop 0.6s ease-out;
+}
+
+/* Quick Action Button Grid */
+.quick-action-btn {
+    @apply flex items-center justify-center px-4 py-3 rounded-lg transition-all duration-300;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.quick-action-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+}
+
+/* Rating Stars */
+.rating-star {
+    @apply text-yellow-400 transition-transform duration-200;
+}
+
+.rating-star:hover {
+    transform: scale(1.2);
+}
+
+/* Vendor Open/Closed Status */
+.status-open {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-green-100 text-green-800;
+}
+
+.status-open::before {
+    content: '';
+    @apply inline-block w-2 h-2 rounded-full bg-green-500 mr-2;
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.status-closed {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-gray-100 text-gray-800;
+}
+
+.status-closed::before {
+    content: '';
+    @apply inline-block w-2 h-2 rounded-full bg-gray-500 mr-2;
 }
