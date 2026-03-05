@@ -118,20 +118,48 @@
                 <p class="mt-2 text-gray-600">This vendor hasn't added any items yet. Check back soon!</p>
             </div>
         @else
-            <!-- Shopping Cart Summary (Sticky) -->
-            <div id="cart-summary" class="hidden fixed bottom-4 right-4 bg-white rounded-xl shadow-2xl p-6 w-80 border-4 border-indigo-500 z-50">
-                <h3 class="text-xl font-bold text-gray-900 mb-4">Your Order</h3>
-                <div id="cart-items" class="space-y-2 mb-4 max-h-60 overflow-y-auto"></div>
-                <div class="border-t-2 border-gray-200 pt-4">
-                    <div class="flex justify-between items-center mb-4">
-                        <span class="text-lg font-bold text-gray-900">Total:</span>
-                        <span id="cart-total" class="text-2xl font-bold text-indigo-600">₱0.00</span>
+            <!-- Shopping Cart Summary (Sticky) - Dynamic Design -->
+            <div id="cart-summary" class="hidden fixed bottom-6 right-6 w-96 z-50">
+                <!-- Cart Header with Gradient -->
+                <div class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-t-2xl p-4 shadow-2xl">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="bg-white/20 backdrop-blur-sm rounded-full p-2">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-white">Your Cart</h3>
+                                <p class="text-xs text-white/80" id="cart-count">0 items</p>
+                            </div>
+                        </div>
+                        <button onclick="clearCart()" class="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white p-2 rounded-full transition">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                        </button>
                     </div>
-                    <button onclick="proceedToCheckout()" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-6 py-3 rounded-lg font-semibold shadow-lg transition transform hover:scale-105">
-                        Place Order
-                    </button>
-                    <button onclick="clearCart()" class="w-full mt-2 bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2 rounded-lg font-medium transition">
-                        Clear Cart
+                </div>
+
+                <!-- Cart Items with Glass Effect -->
+                <div class="bg-white/95 backdrop-blur-lg shadow-2xl max-h-80 overflow-y-auto">
+                    <div id="cart-items" class="p-4 space-y-3"></div>
+                </div>
+
+                <!-- Cart Footer with Total -->
+                <div class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-b-2xl p-4 shadow-2xl">
+                    <div class="bg-white/20 backdrop-blur-sm rounded-xl p-4 mb-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-white font-semibold text-lg">Total Amount</span>
+                            <span id="cart-total" class="text-3xl font-bold text-white">₱0.00</span>
+                        </div>
+                    </div>
+                    <button onclick="proceedToCheckout()" class="w-full bg-white hover:bg-gray-100 text-indigo-600 px-6 py-4 rounded-xl font-bold shadow-lg transition transform hover:scale-105 flex items-center justify-center space-x-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                        <span>Place Order Now</span>
                     </button>
                 </div>
             </div>
@@ -301,6 +329,7 @@
             const cartSummary = document.getElementById('cart-summary');
             const cartItems = document.getElementById('cart-items');
             const cartTotal = document.getElementById('cart-total');
+            const cartCount = document.getElementById('cart-count');
 
             if (cart.length === 0) {
                 cartSummary.classList.add('hidden');
@@ -310,19 +339,27 @@
             cartSummary.classList.remove('hidden');
 
             let total = 0;
+            let totalItems = 0;
             let html = '';
 
             cart.forEach((item, index) => {
                 const itemTotal = item.price * item.quantity;
                 total += itemTotal;
+                totalItems += item.quantity;
                 html += `
-                    <div class="flex justify-between items-center text-sm">
-                        <div class="flex-1">
-                            <span class="font-semibold">${item.quantity}x</span> ${item.name}
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <span class="font-bold text-indigo-600">₱${itemTotal.toFixed(2)}</span>
-                            <button onclick="removeFromCart(${index})" class="text-red-500 hover:text-red-700">
+                    <div class="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-3 border border-indigo-100 hover:shadow-md transition">
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1 pr-2">
+                                <div class="flex items-center space-x-2 mb-1">
+                                    <span class="bg-indigo-600 text-white text-xs font-bold px-2 py-1 rounded-full">${item.quantity}x</span>
+                                    <span class="font-semibold text-gray-800 text-sm">${item.name}</span>
+                                </div>
+                                <div class="flex items-center justify-between mt-2">
+                                    <span class="text-xs text-gray-600">₱${item.price.toFixed(2)} each</span>
+                                    <span class="font-bold text-indigo-600">₱${itemTotal.toFixed(2)}</span>
+                                </div>
+                            </div>
+                            <button onclick="removeFromCart(${index})" class="bg-red-100 hover:bg-red-200 text-red-600 p-1.5 rounded-lg transition flex-shrink-0">
                                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                 </svg>
@@ -334,6 +371,7 @@
 
             cartItems.innerHTML = html;
             cartTotal.textContent = `₱${total.toFixed(2)}`;
+            cartCount.textContent = `${totalItems} item${totalItems !== 1 ? 's' : ''}`;
         }
 
         function removeFromCart(index) {
