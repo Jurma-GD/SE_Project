@@ -5,25 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $vendor->vendor_name }} - CampusEats</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 <body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
     <!-- Navigation -->
-    <nav class="bg-white shadow-lg border-b-4 border-indigo-500">
+    <nav class="bg-white shadow-lg border-b-4" style="border-color: #724e2c;">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex items-center space-x-8">
-                    <a href="{{ route('home') }}" class="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                    <a href="{{ route('home') }}" class="campuseats-logo text-2xl">
                         🍽️ CampusEats
                     </a>
-                    <a href="{{ route('home') }}" class="text-gray-700 hover:text-indigo-600 px-3 py-2 text-sm font-medium transition">
+                    <a href="{{ route('home') }}" class="text-gray-700 px-3 py-2 text-sm font-medium transition" style="hover:color: #724e2c;">
                         ← Back to Vendors
                     </a>
                 </div>
                 <div class="flex items-center space-x-4">
                     @auth
                         @if(auth()->user()->isStudent())
-                            <a href="{{ route('orders.my') }}" class="text-gray-700 hover:text-indigo-600 px-3 py-2 text-sm font-medium transition flex items-center">
+                            <a href="{{ route('orders.my') }}" class="text-gray-700 px-3 py-2 text-sm font-medium transition flex items-center">
                                 <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
                                 </svg>
@@ -38,10 +39,10 @@
                             </button>
                         </form>
                     @else
-                        <a href="{{ route('login') }}" class="text-gray-700 hover:text-indigo-600 px-3 py-2 text-sm font-medium transition">
+                        <a href="{{ route('login') }}" class="text-gray-700 px-3 py-2 text-sm font-medium transition">
                             Login
                         </a>
-                        <a href="{{ route('register') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium transition">
+                        <a href="{{ route('register') }}" class="text-white px-4 py-2 rounded-lg font-medium transition" style="background-color: #724e2c;">
                             Join CampusEats
                         </a>
                     @endauth
@@ -51,13 +52,13 @@
     </nav>
 
     <!-- Vendor Header -->
-    <div class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-xl">
+    <div class="text-white shadow-xl" style="background: linear-gradient(to right, #724e2c, #563517);">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div class="flex items-start justify-between">
                 <div class="flex-1">
                     <h1 class="text-4xl font-bold mb-3">{{ $vendor->vendor_name }}</h1>
                     <div class="space-y-2">
-                        <p class="text-indigo-100 flex items-center text-lg">
+                        <p class="flex items-center text-lg" style="color: #dfc3a9;">
                             <svg class="h-6 w-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -65,7 +66,7 @@
                             {{ $vendor->location }}
                         </p>
                         @if($vendor->contact_info)
-                            <p class="text-indigo-100 flex items-center">
+                            <p class="flex items-center" style="color: #dfc3a9;">
                                 <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
                                 </svg>
@@ -73,12 +74,12 @@
                             </p>
                         @endif
                         @if($vendor->description)
-                            <p class="text-indigo-100 mt-3">{{ $vendor->description }}</p>
+                            <p class="mt-3" style="color: #dfc3a9;">{{ $vendor->description }}</p>
                         @endif
                     </div>
                 </div>
-                <div class="bg-white bg-opacity-20 rounded-xl p-6 text-center backdrop-blur-sm">
-                    <p class="text-sm text-indigo-100 mb-1">Total Items</p>
+                <div class="rounded-xl p-6 text-center backdrop-blur-sm" style="background: rgba(255,255,255,0.15);">
+                    <p class="text-sm mb-1" style="color: #dfc3a9;">Total Items</p>
                     <p class="text-4xl font-bold">{{ $vendor->menuItems->count() }}</p>
                 </div>
             </div>
@@ -121,10 +122,10 @@
             <!-- Shopping Cart Summary (Sticky) - Dynamic Design -->
             <div id="cart-summary" class="hidden fixed bottom-6 right-6 w-96 z-50">
                 <!-- Cart Header with Gradient -->
-                <div class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-t-2xl p-4 shadow-2xl">
+                <div class="rounded-t-2xl p-4 shadow-2xl" style="background: linear-gradient(to right, #724e2c, #563517);">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center space-x-3">
-                            <div class="bg-white/20 backdrop-blur-sm rounded-full p-2">
+                            <div class="rounded-full p-2" style="background: rgba(255,255,255,0.2);">
                                 <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
                                 </svg>
@@ -134,7 +135,7 @@
                                 <p class="text-xs text-white/80" id="cart-count">0 items</p>
                             </div>
                         </div>
-                        <button onclick="clearCart()" class="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white p-2 rounded-full transition">
+                        <button onclick="clearCart()" class="hover:bg-white/30 backdrop-blur-sm text-white p-2 rounded-full transition" style="background: rgba(255,255,255,0.2);">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                             </svg>
@@ -148,14 +149,14 @@
                 </div>
 
                 <!-- Cart Footer with Total -->
-                <div class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-b-2xl p-4 shadow-2xl">
-                    <div class="bg-white/20 backdrop-blur-sm rounded-xl p-4 mb-3">
+                <div class="rounded-b-2xl p-4 shadow-2xl" style="background: linear-gradient(to right, #724e2c, #563517);">
+                    <div class="rounded-xl p-4 mb-3" style="background: rgba(255,255,255,0.2);">
                         <div class="flex justify-between items-center">
                             <span class="text-white font-semibold text-lg">Total Amount</span>
                             <span id="cart-total" class="text-3xl font-bold text-white">₱0.00</span>
                         </div>
                     </div>
-                    <button onclick="proceedToCheckout()" class="w-full bg-white hover:bg-gray-100 text-indigo-600 px-6 py-4 rounded-xl font-bold shadow-lg transition transform hover:scale-105 flex items-center justify-center space-x-2">
+                    <button onclick="proceedToCheckout()" class="w-full bg-white hover:bg-gray-100 px-6 py-4 rounded-xl font-bold shadow-lg transition transform hover:scale-105 flex items-center justify-center space-x-2" style="color: #724e2c;">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                         </svg>
@@ -171,7 +172,7 @@
 
             @foreach($groupedItems as $category => $items)
                 <div class="mb-12">
-                    <h2 class="text-3xl font-bold text-gray-900 mb-6 pb-3 border-b-4 border-indigo-500">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-6 pb-3 border-b-4" style="border-color: #724e2c;">
                         {{ $category ?: 'Other Items' }}
                     </h2>
                     
@@ -233,7 +234,7 @@
                                 <div class="p-6">
                                     <p class="text-gray-600 text-sm mb-4 h-12 overflow-hidden">{{ $item->description }}</p>
                                     <div class="flex items-center justify-between mb-4">
-                                        <span class="text-3xl font-bold text-indigo-600">₱{{ number_format($item->price, 2) }}</span>
+                                        <span class="text-3xl font-bold" style="color: #724e2c;">₱{{ number_format($item->price, 2) }}</span>
                                     </div>
 
                                     @if($item->is_available)
@@ -250,13 +251,13 @@
                                                         +
                                                     </button>
                                                     <button onclick="addToCart({{ $item->id }}, '{{ $item->name }}', {{ $item->price }})" 
-                                                            class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-semibold transition">
+                                                            class="flex-1 text-white px-4 py-2 rounded-lg font-semibold transition" style="background-color: #724e2c;">
                                                         Add to Cart
                                                     </button>
                                                 </div>
                                             @endif
                                         @else
-                                            <a href="{{ route('login') }}" class="block text-center bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-semibold transition">
+                                            <a href="{{ route('login') }}" class="block text-center text-white px-4 py-2 rounded-lg font-semibold transition" style="background-color: #724e2c;">
                                                 Login to Order
                                             </a>
                                         @endauth
@@ -347,16 +348,16 @@
                 total += itemTotal;
                 totalItems += item.quantity;
                 html += `
-                    <div class="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-3 border border-indigo-100 hover:shadow-md transition">
+                    <div class="rounded-xl p-3 border hover:shadow-md transition" style="background: linear-gradient(to right, #f5efe8, #dfc3a9); border-color: #dfc3a9;">
                         <div class="flex items-start justify-between">
                             <div class="flex-1 pr-2">
                                 <div class="flex items-center space-x-2 mb-1">
-                                    <span class="bg-indigo-600 text-white text-xs font-bold px-2 py-1 rounded-full">${item.quantity}x</span>
+                                    <span class="text-white text-xs font-bold px-2 py-1 rounded-full" style="background-color: #724e2c;">${item.quantity}x</span>
                                     <span class="font-semibold text-gray-800 text-sm">${item.name}</span>
                                 </div>
                                 <div class="flex items-center justify-between mt-2">
                                     <span class="text-xs text-gray-600">₱${item.price.toFixed(2)} each</span>
-                                    <span class="font-bold text-indigo-600">₱${itemTotal.toFixed(2)}</span>
+                                    <span class="font-bold" style="color: #724e2c;">₱${itemTotal.toFixed(2)}</span>
                                 </div>
                             </div>
                             <button onclick="removeFromCart(${index})" class="bg-red-100 hover:bg-red-200 text-red-600 p-1.5 rounded-lg transition flex-shrink-0">

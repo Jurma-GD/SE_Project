@@ -6,9 +6,9 @@
     <title>My Orders - CampusEats</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-gradient-to-br from-orange-50 to-yellow-50">
+<body class="bg-gradient-to-br from-amber-50 to-stone-100">
     <!-- Navigation -->
-    <nav class="bg-white shadow-lg border-b-2 border-orange-200">
+    <nav class="bg-white shadow-lg border-b-2 border-amber-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex items-center space-x-8">
@@ -139,12 +139,12 @@
                                     </p>
                                 </div>
                                 <div class="text-right">
-                                    <p class="text-3xl font-bold text-orange-600">₱{{ number_format($order->total_amount, 2) }}</p>
+                                    <p class="text-3xl font-bold" style="color: #724e2c;">₱{{ number_format($order->total_amount, 2) }}</p>
                                 </div>
                             </div>
 
                             <!-- Vendor Information -->
-                            <div class="bg-gradient-to-r from-orange-50 to-yellow-50 rounded-lg p-4 mb-4">
+                            <div class="bg-gradient-to-r rounded-lg p-4 mb-4" style="background: linear-gradient(to right, #f5efe8, #dfc3a9);">
                                 <div class="flex items-center justify-between">
                                     <div>
                                         <p class="text-sm text-gray-600 font-semibold">Vendor</p>
@@ -152,13 +152,13 @@
                                     </div>
                                     <div class="text-right">
                                         <p class="text-sm text-gray-600 font-semibold flex items-center justify-end">
-                                            <svg class="h-5 w-5 mr-1 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg class="h-5 w-5 mr-1" style="color: #724e2c;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                             </svg>
                                             Pickup Location
                                         </p>
-                                        <p class="text-lg font-bold text-orange-600">{{ $order->vendor->location }}</p>
+                                        <p class="text-lg font-bold" style="color: #724e2c;">{{ $order->vendor->location }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -171,7 +171,7 @@
                                         <div class="flex justify-between items-center py-2 border-b border-gray-100">
                                             <div class="flex-1">
                                                 <p class="font-semibold text-gray-800">
-                                                    <span class="text-orange-600">{{ $item->quantity }}x</span> {{ $item->item_name }}
+                                                    <span style="color: #724e2c;">{{ $item->quantity }}x</span> {{ $item->item_name }}
                                                 </p>
                                                 <p class="text-sm text-gray-600">₱{{ number_format($item->price_at_order, 2) }} each</p>
                                             </div>
@@ -209,7 +209,7 @@
     </div>
 
     <!-- Footer -->
-    <footer class="bg-white border-t-2 border-orange-200 mt-16">
+    <footer class="bg-white border-t-2 border-amber-200 mt-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div class="text-center">
                 <p class="campuseats-logo text-2xl mb-2">🍽️ CampusEats</p>

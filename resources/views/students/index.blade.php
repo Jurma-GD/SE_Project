@@ -6,9 +6,9 @@
     <title>Browse Vendors - CampusEats</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-gradient-to-br from-orange-50 to-yellow-50">
+<body class="bg-gradient-to-br from-amber-50 to-stone-100">
     <!-- Navigation -->
-    <nav class="bg-white shadow-lg border-b-2 border-orange-200">
+    <nav class="bg-white shadow-lg border-b-2 border-amber-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex items-center">
@@ -51,9 +51,9 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
             <div class="text-center animate-fade-in">
                 <h2 class="text-5xl font-extrabold sm:text-6xl mb-4">
-                    Hungry? We've Got You! 🎉
+                    Hungry? We've Got You!
                 </h2>
-                <p class="mt-4 text-xl text-orange-100 font-medium">
+                <p class="mt-4 text-xl font-medium" style="color: #dfc3a9;">
                     Browse campus vendor menus, order ahead, and skip the wait!
                 </p>
             </div>
@@ -61,10 +61,12 @@
             <!-- Search Bar -->
             <div class="mt-8 max-w-2xl mx-auto animate-slide-in-right">
                 <form action="{{ route('search') }}" method="GET" class="flex gap-3">
-                    <input type="text" name="q" placeholder="🔍 Search for your favorite food..."
-                           class="flex-1 px-6 py-4 rounded-xl text-gray-900 focus:outline-none focus:ring-4 focus:ring-orange-300 font-medium shadow-lg"
+                    <input type="text" name="q" placeholder="Search for your favorite food..."
+                           class="flex-1 px-6 py-4 rounded-xl text-gray-900 focus:outline-none focus:ring-4 font-medium shadow-lg"
+                           style="focus-ring-color: #dfc3a9;"
                            value="{{ request('q') }}">
-                    <button type="submit" class="bg-white text-orange-600 px-8 py-4 rounded-xl font-bold hover:bg-orange-50 transition-all shadow-lg hover:shadow-xl transform hover:scale-105">
+                    <button type="submit" class="px-8 py-4 rounded-xl font-bold transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
+                            style="background-color: white; color: #724e2c;">
                         Search
                     </button>
                 </form>
@@ -87,8 +89,8 @@
         @else
             <div class="mb-8 flex items-center justify-between">
                 <h3 class="text-3xl font-extrabold text-gray-900">
-                    🏪 Available Vendors
-                    <span class="text-orange-600">({{ $vendors->count() }})</span>
+                    Available Vendors
+                    <span style="color: #724e2c;">({{ $vendors->count() }})</span>
                 </h3>
             </div>
             
@@ -160,7 +162,7 @@
     </div>
 
     <!-- Footer -->
-    <footer class="bg-white border-t-2 border-orange-200 mt-16">
+    <footer class="bg-white border-t-2 border-amber-200 mt-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div class="text-center">
                 <p class="campuseats-logo text-2xl mb-2">🍽️ CampusEats</p>
