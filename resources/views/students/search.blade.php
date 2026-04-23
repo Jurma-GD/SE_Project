@@ -6,9 +6,9 @@
     <title>Search Results - CampusEats</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-gradient-to-br from-orange-50 to-yellow-50">
+<body class="bg-gradient-to-br from-stone-50 to-stone-100">
     <!-- Navigation -->
-    <nav class="bg-white shadow-lg border-b-2 border-orange-200">
+    <nav class="bg-white shadow-lg border-b" style="border-color: #724e2c20;">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex items-center space-x-8">
@@ -59,16 +59,16 @@
                 <form action="{{ route('search') }}" method="GET" class="max-w-4xl">
                     <div class="flex gap-3 mb-4">
                         <input type="text" name="q" placeholder="🔍 Search for your favorite food..."
-                               class="flex-1 px-6 py-4 rounded-xl text-gray-900 focus:outline-none focus:ring-4 focus:ring-orange-300 font-medium shadow-lg"
+                               class="flex-1 px-6 py-4 rounded-xl text-gray-900 focus:outline-none focus:ring-4 font-medium shadow-lg"
                                value="{{ request('q') }}">
-                        <button type="submit" class="bg-white text-orange-600 px-8 py-4 rounded-xl font-bold hover:bg-orange-50 transition-all shadow-lg hover:shadow-xl transform hover:scale-105">
+                        <button type="submit" class="px-8 py-4 rounded-xl font-bold transition-all shadow-lg hover:shadow-xl transform hover:scale-105" style="background-color: white; color: #724e2c;">
                             Search
                         </button>
                     </div>
 
                     <!-- Filters -->
                     <div class="flex gap-3 flex-wrap">
-                        <select name="vendor_id" class="px-4 py-2 rounded-lg text-gray-900 font-medium focus:outline-none focus:ring-2 focus:ring-orange-300">
+                        <select name="vendor_id" class="px-4 py-2 rounded-lg text-gray-900 font-medium focus:outline-none focus:ring-2">
                             <option value="">All Vendors</option>
                             @foreach($vendors as $vendor)
                                 <option value="{{ $vendor->id }}" {{ request('vendor_id') == $vendor->id ? 'selected' : '' }}>
@@ -77,7 +77,7 @@
                             @endforeach
                         </select>
 
-                        <select name="availability" class="px-4 py-2 rounded-lg text-gray-900 font-medium focus:outline-none focus:ring-2 focus:ring-orange-300">
+                        <select name="availability" class="px-4 py-2 rounded-lg text-gray-900 font-medium focus:outline-none focus:ring-2">
                             <option value="">All Items</option>
                             <option value="available" {{ request('availability') === 'available' ? 'selected' : '' }}>
                                 Available Only
@@ -105,7 +105,7 @@
             <h2 class="text-2xl font-bold text-gray-900">
                 Found {{ $menuItems->count() }} item(s)
                 @if(request('q'))
-                    for "<span class="text-orange-600">{{ request('q') }}</span>"
+                    for "<span style="color: #724e2c;">{{ request('q') }}</span>"
                 @endif
             </h2>
             @if(request('vendor_id'))
@@ -128,7 +128,7 @@
         @if($menuItems->isEmpty())
             <div class="text-center py-16 animate-fade-in">
                 <div class="inline-block p-8 bg-white rounded-2xl shadow-xl">
-                    <svg class="mx-auto h-16 w-16 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="mx-auto h-16 w-16" style="color: #724e2c;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
                     <h3 class="mt-4 text-xl font-bold text-gray-900">No items found</h3>
@@ -200,14 +200,14 @@
                                 <div class="flex items-center justify-between">
                                     <div class="flex-1">
                                         <p class="text-sm text-gray-600 font-semibold">From</p>
-                                        <p class="text-lg font-bold text-orange-600">{{ $item->vendor->vendor_name }}</p>
+                                        <p class="text-lg font-bold" style="color: #724e2c;">{{ $item->vendor->vendor_name }}</p>
                                     </div>
-                                    <a href="{{ route('vendors.show', $item->vendor) }}" class="text-orange-600 hover:text-orange-700 text-sm font-semibold">
+                                    <a href="{{ route('vendors.show', $item->vendor) }}" class="text-sm font-semibold" style="color: #724e2c;">
                                         View Vendor →
                                     </a>
                                 </div>
                                 <p class="text-sm text-gray-600 flex items-center mt-1">
-                                    <svg class="h-4 w-4 mr-1 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="h-4 w-4 mr-1" style="color: #724e2c;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                     </svg>
@@ -218,7 +218,7 @@
                             <p class="text-gray-600 text-sm mb-4 h-12 overflow-hidden">{{ $item->description }}</p>
                             
                             <div class="flex items-center justify-between mb-4">
-                                <span class="text-3xl font-bold text-orange-600">₱{{ number_format($item->price, 2) }}</span>
+                                <span class="text-3xl font-bold" style="color: #724e2c;">₱{{ number_format($item->price, 2) }}</span>
                             </div>
 
                             @if($item->is_available)
@@ -242,7 +242,7 @@
     </div>
 
     <!-- Footer -->
-    <footer class="bg-white border-t-2 border-orange-200 mt-16">
+    <footer class="bg-white border-t mt-16" style="border-color: #724e2c20;">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div class="text-center">
                 <p class="campuseats-logo text-2xl mb-2">🍽️ CampusEats</p>

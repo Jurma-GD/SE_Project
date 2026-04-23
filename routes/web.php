@@ -5,16 +5,11 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\MenuItemController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\VendorController;
+use App\Http\Controllers\VendorOperatingHoursController;
 use Illuminate\Support\Facades\Route;
 
-// Public landing page - redirects to login
+// Public landing page - always redirect to login
 Route::get('/', function () {
-    if (auth()->check()) {
-        if (auth()->user()->role === 'vendor') {
-            return redirect()->route('vendor.dashboard');
-        }
-        return redirect()->route('home');
-    }
     return redirect()->route('login');
 })->name('welcome');
 
@@ -56,4 +51,8 @@ Route::middleware(['auth', 'vendor'])->prefix('vendor')->name('vendor.')->group(
     Route::get('/orders', [\App\Http\Controllers\OrderController::class, 'vendorOrders'])->name('orders');
     Route::post('/orders/{order}/ready', [\App\Http\Controllers\OrderController::class, 'markReady'])->name('orders.ready');
     Route::post('/orders/{order}/complete', [\App\Http\Controllers\OrderController::class, 'markCompleted'])->name('orders.complete');
+
+    // Operating hours
+    Route::put('/operating-hours', [VendorOperatingHoursController::class, 'update'])
+        ->name('operating-hours.update');
 });

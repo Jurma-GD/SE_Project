@@ -169,12 +169,17 @@
                     <div class="bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition duration-300 border border-gray-200">
                         <!-- Item Image -->
                         <div class="relative h-48 overflow-hidden" style="background: linear-gradient(135deg, #{{ $categoryColor['bg'] }}22 0%, #{{ $categoryColor['bg'] }}44 100%);">
-                            <div class="absolute inset-0 flex items-center justify-center">
-                                <div class="text-center">
-                                    <div class="text-8xl mb-2">{{ $emoji }}</div>
-                                    <div class="text-sm font-semibold text-gray-600">{{ $item->category }}</div>
+                            @if($item->image_url)
+                                <img src="{{ Storage::url($item->image_url) }}" alt="{{ $item->name }}"
+                                     class="absolute inset-0 w-full h-full object-cover">
+                            @else
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <div class="text-center">
+                                        <div class="text-8xl mb-2">{{ $emoji }}</div>
+                                        <div class="text-sm font-semibold text-gray-600">{{ $item->category }}</div>
+                                    </div>
                                 </div>
-                            </div>
+                            @endif
                             <div class="absolute top-3 right-3">
                                 <span class="px-3 py-1 rounded-full text-xs font-bold shadow-lg {{ $item->is_available ? 'bg-green-500 text-white' : 'bg-red-500 text-white' }}">
                                     {{ $item->is_available ? 'Available' : 'Unavailable' }}

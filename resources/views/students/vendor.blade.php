@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $vendor->vendor_name }} - CampusEats</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
@@ -56,7 +55,20 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div class="flex items-start justify-between">
                 <div class="flex-1">
-                    <h1 class="text-4xl font-bold mb-3">{{ $vendor->vendor_name }}</h1>
+                    <div class="flex items-center gap-4 mb-3">
+                        <h1 class="text-4xl font-bold">{{ $vendor->vendor_name }}</h1>
+                        @if($isOpenNow)
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-semibold bg-green-500 text-white shadow">
+                                <span class="w-2 h-2 rounded-full bg-white inline-block"></span>
+                                Open Now
+                            </span>
+                        @else
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-semibold bg-red-500 text-white shadow">
+                                <span class="w-2 h-2 rounded-full bg-white inline-block"></span>
+                                Closed
+                            </span>
+                        @endif
+                    </div>
                     <div class="space-y-2">
                         <p class="flex items-center text-lg" style="color: #dfc3a9;">
                             <svg class="h-6 w-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -75,6 +87,34 @@
                         @endif
                         @if($vendor->description)
                             <p class="mt-3" style="color: #dfc3a9;">{{ $vendor->description }}</p>
+                        @endif
+
+                        {{-- Weekly Schedule --}}
+                        @if($vendor->operatingHours->isNotEmpty())
+                            @php
+                                $dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                            @endphp
+                            <div class="mt-5">
+                                <h3 class="text-sm font-semibold uppercase tracking-wider mb-2" style="color: #dfc3a9;">
+                                    Weekly Schedule
+                                </h3>
+                                <div class="grid grid-cols-1 gap-1">
+                                    @foreach($vendor->operatingHours as $hours)
+                                        <div class="flex items-center justify-between text-sm py-1 border-b" style="border-color: rgba(255,255,255,0.15);">
+                                            <span class="font-medium" style="color: #f5efe8; min-width: 90px;">
+                                                {{ $dayNames[$hours->day_of_week] ?? 'Day ' . $hours->day_of_week }}
+                                            </span>
+                                            @if($hours->is_closed)
+                                                <span class="text-red-300 font-medium">Closed</span>
+                                            @else
+                                                <span style="color: #dfc3a9;">
+                                                    {{ date('g:i A', strtotime($hours->open_time)) }} – {{ date('g:i A', strtotime($hours->close_time)) }}
+                                                </span>
+                                            @endif
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
                         @endif
                     </div>
                 </div>
@@ -205,13 +245,18 @@
                             @endphp
                             <div class="bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition duration-300 border border-gray-200 {{ !$item->is_available ? 'opacity-60' : '' }}">
                                 <!-- Item Image -->
-                                <div class="relative h-48 overflow-hidden" style="background: linear-gradient(135deg, #{{ $categoryColor['bg'] }}22 0%, #{{ $categoryColor['bg'] }}44 100%);">
-                                    <div class="absolute inset-0 flex items-center justify-center">
-                                        <div class="text-center">
-                                            <div class="text-8xl mb-2">{{ $emoji }}</div>
-                                            <div class="text-sm font-semibold text-gray-600">{{ $item->category }}</div>
+                                <div class="relative overflow-hidden" style="height: 200px; background: linear-gradient(135deg, #{{ $categoryColor['bg'] }}22 0%, #{{ $categoryColor['bg'] }}44 100%);">
+                                    @if($item->image_url)
+                                        <img src="{{ Storage::url($item->image_url) }}" alt="{{ $item->name }}"
+                                             style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center center;">
+                                    @else
+                                        <div class="absolute inset-0 flex items-center justify-center">
+                                            <div class="text-center">
+                                                <div class="text-8xl mb-2">{{ $emoji }}</div>
+                                                <div class="text-sm font-semibold text-gray-600">{{ $item->category }}</div>
+                                            </div>
                                         </div>
-                                    </div>
+                                    @endif
                                     @if(!$item->is_available)
                                         <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                                             <span class="px-4 py-2 bg-red-500 text-white text-lg font-bold rounded-full">
@@ -232,6 +277,9 @@
 
                                 <!-- Item Body -->
                                 <div class="p-6">
+                                    @if($item->category)
+                                        <span class="inline-block px-2 py-1 bg-indigo-50 text-indigo-700 text-xs font-semibold rounded-full mb-2">{{ $item->category }}</span>
+                                    @endif
                                     <p class="text-gray-600 text-sm mb-4 h-12 overflow-hidden">{{ $item->description }}</p>
                                     <div class="flex items-center justify-between mb-4">
                                         <span class="text-3xl font-bold" style="color: #724e2c;">₱{{ number_format($item->price, 2) }}</span>

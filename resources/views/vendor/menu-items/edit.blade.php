@@ -61,7 +61,7 @@
     <!-- Main Content -->
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div class="bg-white rounded-xl shadow-lg p-8">
-            <form action="{{ route('vendor.menu-items.update', $menuItem) }}" method="POST">
+            <form action="{{ route('vendor.menu-items.update', $menuItem) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 
@@ -103,21 +103,66 @@
                     <!-- Category -->
                     <div>
                         <label for="category" class="block text-sm font-semibold text-gray-700 mb-2">Category</label>
-                        <select name="category" id="category"
-                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition">
-                            <option value="">Select a category</option>
-                            <option value="Rice Meals" {{ old('category', $menuItem->category) == 'Rice Meals' ? 'selected' : '' }}>Rice Meals</option>
-                            <option value="Breakfast" {{ old('category', $menuItem->category) == 'Breakfast' ? 'selected' : '' }}>Breakfast</option>
-                            <option value="Main Dishes" {{ old('category', $menuItem->category) == 'Main Dishes' ? 'selected' : '' }}>Main Dishes</option>
-                            <option value="Noodles & Pasta" {{ old('category', $menuItem->category) == 'Noodles & Pasta' ? 'selected' : '' }}>Noodles & Pasta</option>
-                            <option value="Snacks" {{ old('category', $menuItem->category) == 'Snacks' ? 'selected' : '' }}>Snacks</option>
-                            <option value="Beverages" {{ old('category', $menuItem->category) == 'Beverages' ? 'selected' : '' }}>Beverages</option>
-                            <option value="Desserts" {{ old('category', $menuItem->category) == 'Desserts' ? 'selected' : '' }}>Desserts</option>
-                        </select>
+                        <input type="text" name="category" id="category" value="{{ old('category', $menuItem->category) }}"
+                               list="category-suggestions" maxlength="100"
+                               class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+                               placeholder="e.g., Rice Meals, Snacks...">
+                        <datalist id="category-suggestions">
+                            @foreach($existingCategories as $cat)
+                                <option value="{{ $cat }}">
+                            @endforeach
+                        </datalist>
+                        @if($existingCategories->isNotEmpty())
+                            <div class="flex flex-wrap gap-2 mt-2">
+                                @foreach($existingCategories as $cat)
+                                    <button type="button" onclick="document.getElementById('category').value='{{ $cat }}'"
+                                            class="px-3 py-1 bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs rounded-full hover:bg-indigo-100 transition">
+                                        {{ $cat }}
+                                    </button>
+                                @endforeach
+                            </div>
+                        @endif
                         @error('category')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
+                </div>
+
+                <!-- Image Upload -->
+                <div class="mb-6">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Item Image</label>
+                    <input type="hidden" name="remove_image" id="remove_image" value="0">
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-indigo-400 transition">
+                        @if($menuItem->image_url)
+                            <img id="image-preview" src="{{ Storage::url($menuItem->image_url) }}" alt="Current image"
+                                 class="mx-auto mb-3 h-40 w-full object-cover rounded-lg">
+                        @else
+                            <img id="image-preview" src="" alt="Preview" class="hidden mx-auto mb-3 h-40 w-full object-cover rounded-lg">
+                        @endif
+                        <input type="file" name="image" id="image" accept="image/jpeg,image/png,image/gif,image/webp"
+                               class="hidden" onchange="previewImage(this)">
+                        <div class="flex items-center justify-center gap-3 flex-wrap">
+                            <label for="image" class="cursor-pointer inline-flex items-center px-4 py-2 bg-indigo-50 border border-indigo-300 text-indigo-700 rounded-lg hover:bg-indigo-100 transition text-sm font-medium">
+                                <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                {{ $menuItem->image_url ? 'Replace Image' : 'Choose Image' }}
+                            </label>
+                            @if($menuItem->image_url)
+                                <button type="button" id="remove-btn" onclick="removeImage()"
+                                        class="inline-flex items-center px-4 py-2 bg-red-50 border border-red-300 text-red-700 rounded-lg hover:bg-red-100 transition text-sm font-medium">
+                                    <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                    Remove Image
+                                </button>
+                            @endif
+                        </div>
+                        <p id="image-filename" class="mt-2 text-xs text-gray-500">JPEG, PNG, GIF, WebP — max 2MB</p>
+                    </div>
+                    @error('image')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <!-- Availability -->
@@ -143,5 +188,37 @@
             </form>
         </div>
     </div>
+    <script>
+        function previewImage(input) {
+            const preview = document.getElementById('image-preview');
+            const filename = document.getElementById('image-filename');
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    preview.src = e.target.result;
+                    preview.classList.remove('hidden');
+                    filename.textContent = input.files[0].name;
+                };
+                reader.readAsDataURL(input.files[0]);
+                // Cancel any pending removal
+                document.getElementById('remove_image').value = '0';
+            } else {
+                preview.classList.add('hidden');
+                preview.src = '';
+                filename.textContent = 'JPEG, PNG, GIF, WebP — max 2MB';
+            }
+        }
+
+        function removeImage() {
+            document.getElementById('remove_image').value = '1';
+            const preview = document.getElementById('image-preview');
+            preview.classList.add('hidden');
+            preview.src = '';
+            document.getElementById('image').value = '';
+            document.getElementById('image-filename').textContent = 'Image will be removed on save';
+            const btn = document.getElementById('remove-btn');
+            if (btn) btn.classList.add('hidden');
+        }
+    </script>
 </body>
 </html>

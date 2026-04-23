@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use App\Models\Vendor;
+use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -27,13 +28,14 @@ class AuthenticationTest extends TestCase
 
     public function test_student_can_register(): void
     {
-        $response = $this->post('/register', [
-            'name' => 'Test Student',
-            'email' => 'student@test.com',
-            'password' => 'password123',
-            'password_confirmation' => 'password123',
-            'role' => 'student',
-        ]);
+        $response = $this->withoutMiddleware(ValidateCsrfToken::class)
+            ->post('/register', [
+                'name' => 'Test Student',
+                'email' => 'student@test.com',
+                'password' => 'password123',
+                'password_confirmation' => 'password123',
+                'role' => 'student',
+            ]);
 
         $response->assertRedirect('/');
         $this->assertAuthenticated();
@@ -45,17 +47,18 @@ class AuthenticationTest extends TestCase
 
     public function test_vendor_can_register_with_profile(): void
     {
-        $response = $this->post('/register', [
-            'name' => 'Test Vendor',
-            'email' => 'vendor@test.com',
-            'password' => 'password123',
-            'password_confirmation' => 'password123',
-            'role' => 'vendor',
-            'vendor_name' => 'Test Food Stall',
-            'location' => 'Building A, Ground Floor',
-            'contact_info' => '123-456-7890',
-            'description' => 'Serving delicious food',
-        ]);
+        $response = $this->withoutMiddleware(ValidateCsrfToken::class)
+            ->post('/register', [
+                'name' => 'Test Vendor',
+                'email' => 'vendor@test.com',
+                'password' => 'password123',
+                'password_confirmation' => 'password123',
+                'role' => 'vendor',
+                'vendor_name' => 'Test Food Stall',
+                'location' => 'Building A, Ground Floor',
+                'contact_info' => '123-456-7890',
+                'description' => 'Serving delicious food',
+            ]);
 
         $response->assertRedirect(route('vendor.dashboard'));
         $this->assertAuthenticated();
@@ -77,13 +80,14 @@ class AuthenticationTest extends TestCase
             'password' => bcrypt('password123'),
         ]);
 
-        $response = $this->post('/login', [
-            'email' => 'test@test.com',
-            'password' => 'password123',
-        ]);
+        $response = $this->withoutMiddleware(ValidateCsrfToken::class)
+            ->post('/login', [
+                'email' => 'test@test.com',
+                'password' => 'password123',
+            ]);
 
         $this->assertAuthenticated();
-        $response->assertRedirect('/');
+        $response->assertRedirect(route('home'));
     }
 
     public function test_user_cannot_login_with_invalid_credentials(): void
@@ -93,10 +97,11 @@ class AuthenticationTest extends TestCase
             'password' => bcrypt('password123'),
         ]);
 
-        $response = $this->post('/login', [
-            'email' => 'test@test.com',
-            'password' => 'wrong-password',
-        ]);
+        $response = $this->withoutMiddleware(ValidateCsrfToken::class)
+            ->post('/login', [
+                'email' => 'test@test.com',
+                'password' => 'wrong-password',
+            ]);
 
         $this->assertGuest();
         $response->assertSessionHasErrors('email');
@@ -109,10 +114,11 @@ class AuthenticationTest extends TestCase
             'password' => bcrypt('password123'),
         ]);
 
-        $response = $this->post('/login', [
-            'email' => 'vendor@test.com',
-            'password' => 'password123',
-        ]);
+        $response = $this->withoutMiddleware(ValidateCsrfToken::class)
+            ->post('/login', [
+                'email' => 'vendor@test.com',
+                'password' => 'password123',
+            ]);
 
         $this->assertAuthenticated();
         $response->assertRedirect(route('vendor.dashboard'));
@@ -125,12 +131,13 @@ class AuthenticationTest extends TestCase
             'password' => bcrypt('password123'),
         ]);
 
-        $response = $this->post('/login', [
-            'email' => 'student@test.com',
-            'password' => 'password123',
-        ]);
+        $response = $this->withoutMiddleware(ValidateCsrfToken::class)
+            ->post('/login', [
+                'email' => 'student@test.com',
+                'password' => 'password123',
+            ]);
 
         $this->assertAuthenticated();
-        $response->assertRedirect('/');
+        $response->assertRedirect(route('home'));
     }
 }

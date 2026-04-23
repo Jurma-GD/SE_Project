@@ -52,37 +52,6 @@
                 </p>
             </div>
 
-            <!-- Test Credentials Card -->
-            <div class="vendor-card-post rounded-xl p-5 scale-hover shadow-2xl">
-                <div class="flex">
-                    <div class="flex-shrink-0">
-                        <svg class="h-6 w-6 text-yellow-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
-                        </svg>
-                    </div>
-                    <div class="ml-3 flex-1">
-                        <h3 class="text-sm font-bold text-gray-900 mb-2">🔑 Test Credentials</h3>
-                        <div class="space-y-3 text-sm">
-                            <div class="bg-blue-50 rounded-lg p-3 border-l-4 border-blue-500">
-                                <p class="font-bold text-blue-900">👨‍🎓 Student Account</p>
-                                <p class="text-blue-800 mt-1">📧 student@test.com</p>
-                                <p class="text-blue-800">🔒 password</p>
-                            </div>
-                            <div class="bg-purple-50 rounded-lg p-3 border-l-4 border-purple-500">
-                                <p class="font-bold text-purple-900">🏪 Vendor (Kwago)</p>
-                                <p class="text-purple-800 mt-1">📧 vendor@test.com</p>
-                                <p class="text-purple-800">🔒 password</p>
-                            </div>
-                            <div class="bg-green-50 rounded-lg p-3 border-l-4 border-green-500">
-                                <p class="font-bold text-green-900">🍴 Vendor (Canteen)</p>
-                                <p class="text-green-800 mt-1">📧 canteen@test.com</p>
-                                <p class="text-green-800">🔒 password</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <!-- Login Form -->
             <form class="mt-8 space-y-6 vendor-card-post rounded-xl p-8 shadow-2xl" action="{{ route('login') }}" method="POST">
                 @csrf

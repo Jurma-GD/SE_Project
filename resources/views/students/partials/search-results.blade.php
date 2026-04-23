@@ -3,7 +3,7 @@
     <h2 class="text-2xl font-bold text-gray-900">
         Found {{ $menuItems->count() }} item(s)
         @if(request('q'))
-            for "<span class="text-orange-600">{{ request('q') }}</span>"
+            for "<span style="color: #724e2c;">{{ request('q') }}</span>"
         @endif
     </h2>
     @if(request('vendor_id'))
@@ -26,7 +26,7 @@
 @if($menuItems->isEmpty())
     <div class="text-center py-16 animate-fade-in">
         <div class="inline-block p-8 bg-white rounded-2xl shadow-xl">
-            <svg class="mx-auto h-16 w-16 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="mx-auto h-16 w-16" style="color: #724e2c;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
             </svg>
             <h3 class="mt-4 text-xl font-bold text-gray-900">No items found</h3>
@@ -98,14 +98,14 @@
                         <div class="flex items-center justify-between">
                             <div class="flex-1">
                                 <p class="text-sm text-gray-600 font-semibold">From</p>
-                                <p class="text-lg font-bold text-orange-600">{{ $item->vendor->vendor_name }}</p>
+                                <p class="text-lg font-bold" style="color: #724e2c;">{{ $item->vendor->vendor_name }}</p>
                             </div>
-                            <a href="{{ route('vendors.show', $item->vendor) }}" class="text-orange-600 hover:text-orange-700 text-sm font-semibold">
+                            <a href="{{ route('vendors.show', $item->vendor) }}" class="text-sm font-semibold" style="color: #724e2c;">
                                 View Vendor →
                             </a>
                         </div>
                         <p class="text-sm text-gray-600 flex items-center mt-1">
-                            <svg class="h-4 w-4 mr-1 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="h-4 w-4 mr-1" style="color: #724e2c;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                             </svg>
@@ -116,7 +116,7 @@
                     <p class="text-gray-600 text-sm mb-4 h-12 overflow-hidden">{{ $item->description }}</p>
                     
                     <div class="flex items-center justify-between mb-4">
-                        <span class="text-3xl font-bold text-orange-600">₱{{ number_format($item->price, 2) }}</span>
+                        <span class="text-3xl font-bold" style="color: #724e2c;">₱{{ number_format($item->price, 2) }}</span>
                     </div>
 
                     @if($item->is_available)

@@ -6,6 +6,7 @@ use App\Models\MenuItem;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class MenuItemController extends Controller
@@ -31,7 +32,18 @@ class MenuItemController extends Controller
      */
     public function create(): View
     {
-        return view('vendor.menu-items.create');
+        $vendor = auth()->user()->vendor;
+
+        if (!$vendor) {
+            abort(404, 'Vendor profile not found');
+        }
+
+        $existingCategories = $vendor->menuItems()
+            ->whereNotNull('category')
+            ->distinct()
+            ->pluck('category');
+
+        return view('vendor.menu-items.create', compact('existingCategories'));
     }
 
     /**
@@ -51,10 +63,15 @@ class MenuItemController extends Controller
             'price' => 'required|numeric|min:0|max:99999.99',
             'is_available' => 'boolean',
             'category' => 'nullable|string|max:100',
+            'image' => 'nullable|image|mimes:jpeg,png,gif,webp|max:2048',
         ]);
 
         $validated['vendor_id'] = $vendor->id;
         $validated['is_available'] = $request->has('is_available');
+
+        if ($request->hasFile('image')) {
+            $validated['image_url'] = $request->file('image')->store('menu-images', 'public');
+        }
 
         MenuItem::create($validated);
 
@@ -73,7 +90,12 @@ class MenuItemController extends Controller
             abort(403, 'Unauthorized access');
         }
 
-        return view('vendor.menu-items.edit', compact('menuItem'));
+        $existingCategories = $vendor->menuItems()
+            ->whereNotNull('category')
+            ->distinct()
+            ->pluck('category');
+
+        return view('vendor.menu-items.edit', compact('menuItem', 'existingCategories'));
     }
 
     /**
@@ -93,9 +115,22 @@ class MenuItemController extends Controller
             'price' => 'required|numeric|min:0|max:99999.99',
             'is_available' => 'boolean',
             'category' => 'nullable|string|max:100',
+            'image' => 'nullable|image|mimes:jpeg,png,gif,webp|max:2048',
         ]);
 
         $validated['is_available'] = $request->has('is_available');
+
+        if ($request->hasFile('image')) {
+            if ($menuItem->image_url) {
+                Storage::disk('public')->delete($menuItem->image_url);
+            }
+            $validated['image_url'] = $request->file('image')->store('menu-images', 'public');
+        } elseif ($request->input('remove_image')) {
+            if ($menuItem->image_url) {
+                Storage::disk('public')->delete($menuItem->image_url);
+            }
+            $validated['image_url'] = null;
+        }
 
         $menuItem->update($validated);
 
@@ -112,6 +147,10 @@ class MenuItemController extends Controller
         
         if (!$vendor || $menuItem->vendor_id !== $vendor->id) {
             abort(403, 'Unauthorized access');
+        }
+
+        if ($menuItem->image_url) {
+            Storage::disk('public')->delete($menuItem->image_url);
         }
 
         $menuItem->delete();

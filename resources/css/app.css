@@ -1,5 +1,5 @@
-@import 'tailwindcss';
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import 'tailwindcss';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
@@ -162,12 +162,19 @@ body {
 
 /* Navigation Styles - Food themed */
 .nav-link {
-    @apply text-gray-700 hover:text-orange-600 px-3 py-2 rounded-md text-sm font-medium;
+    @apply text-gray-700 px-3 py-2 rounded-md text-sm font-medium;
     transition: all 0.3s ease;
+    color: #724e2c;
+}
+
+.nav-link:hover {
+    color: #563517;
 }
 
 .nav-link-active {
-    @apply text-orange-600 border-b-2 border-orange-600 px-3 py-2 text-sm font-semibold;
+    @apply px-3 py-2 text-sm font-semibold;
+    color: #724e2c;
+    border-bottom: 2px solid #724e2c;
 }
 
 /* Form Input Styles */
@@ -236,7 +243,7 @@ body {
 
 .vendor-card:hover {
     transform: translateY(-8px) scale(1.02);
-    border-color: #f97316;
+    border-color: #724e2c;
 }
 
 /* Stats Card - Food themed */
@@ -904,4 +911,19 @@ html {
 .status-closed::before {
     content: '';
     @apply inline-block w-2 h-2 rounded-full bg-gray-500 mr-2;
+}
+
+/* Filter Button Styles - My Orders */
+.filter-btn {
+    @apply px-4 py-2 rounded-lg text-sm font-semibold text-gray-600 transition-all;
+}
+
+.filter-btn:hover {
+    background-color: #f5efe8;
+    color: #724e2c;
+}
+
+.filter-btn-active {
+    color: white;
+    background-color: #724e2c;
 }

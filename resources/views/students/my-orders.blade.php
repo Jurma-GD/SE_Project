@@ -6,9 +6,9 @@
     <title>My Orders - CampusEats</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-gradient-to-br from-amber-50 to-stone-100">
+<body class="bg-gradient-to-br from-stone-50 to-stone-100">
     <!-- Navigation -->
-    <nav class="bg-white shadow-lg border-b-2 border-amber-200">
+    <nav class="bg-white shadow-lg border-b" style="border-color: #724e2c20;">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex items-center space-x-8">
@@ -37,7 +37,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div class="animate-fade-in">
                 <h1 class="text-4xl font-extrabold mb-2">My Orders 📦</h1>
-                <p class="text-orange-100 text-lg">Track your food orders and pickup notifications</p>
+                <p class="text-white/80 text-lg">Track your food orders and pickup notifications</p>
             </div>
         </div>
     </div>
@@ -98,7 +98,7 @@
         @if($orders->isEmpty())
             <div class="text-center py-16 animate-fade-in">
                 <div class="inline-block p-8 bg-white rounded-2xl shadow-xl">
-                    <svg class="mx-auto h-16 w-16 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="mx-auto h-16 w-16" style="color: #724e2c;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
                     </svg>
                     <h3 class="mt-4 text-xl font-bold text-gray-900">No orders yet</h3>
@@ -192,7 +192,7 @@
 
                             <!-- Action Buttons -->
                             <div class="flex gap-3 mt-4">
-                                <a href="{{ route('orders.show', $order) }}" class="btn-secondary flex-1 text-center">
+                                <a href="{{ route('orders.show', $order) }}" class="btn-primary flex-1 text-center">
                                     View Details
                                 </a>
                                 @if($order->status === 'ready')
@@ -209,7 +209,7 @@
     </div>
 
     <!-- Footer -->
-    <footer class="bg-white border-t-2 border-amber-200 mt-16">
+    <footer class="bg-white border-t mt-16" style="border-color: #724e2c20;">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div class="text-center">
                 <p class="campuseats-logo text-2xl mb-2">🍽️ CampusEats</p>

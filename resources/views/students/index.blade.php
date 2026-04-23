@@ -6,9 +6,9 @@
     <title>Browse Vendors - CampusEats</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-gradient-to-br from-amber-50 to-stone-100">
+<body class="bg-gradient-to-br from-stone-50 to-stone-100">
     <!-- Navigation -->
-    <nav class="bg-white shadow-lg border-b-2 border-amber-200">
+    <nav class="bg-white shadow-lg border-b-2" style="border-color: #724e2c20;">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex items-center">
@@ -79,7 +79,7 @@
         @if($vendors->isEmpty())
             <div class="text-center py-16 animate-fade-in">
                 <div class="inline-block p-8 bg-white rounded-2xl shadow-xl">
-                    <svg class="mx-auto h-16 w-16 text-orange-400 animate-bounce-gentle" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="mx-auto h-16 w-16 animate-bounce-gentle" style="color: #724e2c;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
                     <h3 class="mt-4 text-xl font-bold text-gray-900">No vendors available right now</h3>
@@ -112,6 +112,17 @@
                                     <div class="text-9xl mb-2">{{ $style['emoji'] }}</div>
                                 </div>
                             </div>
+                            <div class="absolute top-3 left-3">
+                                @if($vendorOpenStatus[$vendor->id] ?? false)
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-green-500 text-white shadow-lg">
+                                        ● Open
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-red-500 text-white shadow-lg">
+                                        ● Closed
+                                    </span>
+                                @endif
+                            </div>
                             <div class="absolute top-3 right-3">
                                 <span class="badge badge-success animate-bounce-gentle shadow-lg">
                                     {{ $vendor->menuItems->count() }} items
@@ -126,7 +137,7 @@
                             <div class="flex items-start justify-between mb-4">
                                 <div class="flex-1">
                                     <p class="text-sm text-gray-600 flex items-center font-medium">
-                                        <svg class="h-5 w-5 mr-2 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="h-5 w-5 mr-2" style="color: #724e2c;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                         </svg>
@@ -141,7 +152,7 @@
 
                             @if($vendor->contact_info)
                                 <p class="text-sm text-gray-600 mb-4 flex items-center">
-                                    <svg class="h-4 w-4 mr-2 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="h-4 w-4 mr-2" style="color: #724e2c;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
                                     </svg>
                                     {{ $vendor->contact_info }}
@@ -162,7 +173,7 @@
     </div>
 
     <!-- Footer -->
-    <footer class="bg-white border-t-2 border-amber-200 mt-16">
+    <footer class="bg-white border-t mt-16" style="border-color: #724e2c20;">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div class="text-center">
                 <p class="campuseats-logo text-2xl mb-2">🍽️ CampusEats</p>

@@ -32,10 +32,12 @@ class VendorController extends Controller
     public function profile(): View
     {
         $vendor = auth()->user()->vendor;
-        
+
         if (!$vendor) {
             abort(404, 'Vendor profile not found');
         }
+
+        $vendor->load('operatingHours');
 
         return view('vendor.profile', compact('vendor'));
     }

@@ -38,7 +38,7 @@ class LoginController extends Controller
                 return redirect()->intended(route('vendor.dashboard'));
             }
 
-            return redirect()->intended('/');
+            return redirect()->intended(route('home'));
         }
 
         return back()->withErrors([

@@ -21,6 +21,18 @@ class MenuItem extends Model
         'price',
         'is_available',
         'category',
+        'image_url',
+        'custom_category',
+        'tags',
+        'preparation_time',
+        'is_spicy',
+        'is_vegetarian',
+        'is_featured',
+        'stock_quantity',
+        'customization_options',
+        'allergen_info',
+        'calories',
+        'display_order',
     ];
 
     /**
@@ -33,6 +45,11 @@ class MenuItem extends Model
         return [
             'price' => 'decimal:2',
             'is_available' => 'boolean',
+            'tags' => 'array',
+            'customization_options' => 'array',
+            'is_spicy' => 'boolean',
+            'is_vegetarian' => 'boolean',
+            'is_featured' => 'boolean',
         ];
     }
 

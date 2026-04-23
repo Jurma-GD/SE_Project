@@ -14,11 +14,18 @@ class StudentController extends Controller
      */
     public function index(): View
     {
-        $vendors = Vendor::with(['menuItems' => function ($query) {
-            $query->orderBy('category')->orderBy('name');
-        }])->get();
+        $vendors = Vendor::with([
+            'menuItems' => function ($query) {
+                $query->orderBy('category')->orderBy('name');
+            },
+            'operatingHours',
+        ])->get();
 
-        return view('students.index', compact('vendors'));
+        $vendorOpenStatus = $vendors->mapWithKeys(function ($vendor) {
+            return [$vendor->id => $vendor->isOpenNow()];
+        });
+
+        return view('students.index', compact('vendors', 'vendorOpenStatus'));
     }
 
     /**
@@ -26,11 +33,16 @@ class StudentController extends Controller
      */
     public function showVendor(Vendor $vendor): View
     {
-        $vendor->load(['menuItems' => function ($query) {
-            $query->orderBy('category')->orderBy('name');
-        }]);
+        $vendor->load([
+            'menuItems' => function ($query) {
+                $query->orderBy('category')->orderBy('name');
+            },
+            'operatingHours',
+        ]);
 
-        return view('students.vendor', compact('vendor'));
+        $isOpenNow = $vendor->isOpenNow();
+
+        return view('students.vendor', compact('vendor', 'isOpenNow'));
     }
 
     /**
