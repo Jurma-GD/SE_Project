@@ -64,10 +64,12 @@ class MenuItemController extends Controller
             'is_available' => 'boolean',
             'category' => 'nullable|string|max:100',
             'image' => 'nullable|image|mimes:jpeg,png,gif,webp|max:2048',
+            'image_position' => 'nullable|string|max:50',
         ]);
 
         $validated['vendor_id'] = $vendor->id;
         $validated['is_available'] = $request->has('is_available');
+        $validated['image_position'] = $request->input('image_position', 'center center');
 
         if ($request->hasFile('image')) {
             $validated['image_url'] = $request->file('image')->store('menu-images', 'public');
@@ -116,9 +118,11 @@ class MenuItemController extends Controller
             'is_available' => 'boolean',
             'category' => 'nullable|string|max:100',
             'image' => 'nullable|image|mimes:jpeg,png,gif,webp|max:2048',
+            'image_position' => 'nullable|string|max:50',
         ]);
 
         $validated['is_available'] = $request->has('is_available');
+        $validated['image_position'] = $request->input('image_position', $menuItem->image_position ?? 'center center');
 
         if ($request->hasFile('image')) {
             if ($menuItem->image_url) {

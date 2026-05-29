@@ -22,6 +22,7 @@ class MenuItem extends Model
         'is_available',
         'category',
         'image_url',
+        'image_position',
         'custom_category',
         'tags',
         'preparation_time',

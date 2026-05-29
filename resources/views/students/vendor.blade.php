@@ -6,487 +6,582 @@
     <title>{{ $vendor->vendor_name }} - CampusEats</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <style>
+        body { display: flex; flex-direction: column; min-height: 100vh; }
+        #page-body { display: flex; flex: 1; }
+
+        /* ── Sidebar (desktop) ── */
+        #category-sidebar {
+            width: 220px;
+            min-width: 220px;
+            background: #fff;
+            border-right: 1px solid #e8e0d8;
+            position: sticky;
+            top: 56px;
+            height: calc(100vh - 56px);
+            overflow-y: auto;
+            padding: 24px 0;
+            flex-shrink: 0;
+            align-self: flex-start;
+        }
+        #category-sidebar .sidebar-label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #9e8a78;
+            padding: 0 20px 14px;
+            display: block;
+        }
+        .category-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #3c3028;
+            text-decoration: none;
+            border-left: 3px solid transparent;
+            transition: background 0.15s, border-color 0.15s, color 0.15s;
+            cursor: pointer;
+        }
+        .category-link:hover { background: #fdf5ef; }
+        .category-link.active {
+            border-left-color: #724e2c;
+            background: #fdf0e6;
+            color: #724e2c;
+            font-weight: 700;
+        }
+        .category-link .cat-count {
+            font-size: 12px;
+            color: #9e8a78;
+            font-weight: 400;
+        }
+
+        /* ── Mobile category bar ── */
+        #mobile-cat-bar {
+            display: none;
+            overflow-x: auto;
+            white-space: nowrap;
+            background: #fff;
+            border-bottom: 1px solid #e8e0d8;
+            padding: 10px 16px;
+            gap: 8px;
+            position: sticky;
+            top: 56px;
+            z-index: 40;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        #mobile-cat-bar::-webkit-scrollbar { display: none; }
+        .mobile-cat-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 999px;
+            border: 1.5px solid #e8e0d8;
+            font-size: 13px;
+            font-weight: 500;
+            color: #3c3028;
+            text-decoration: none;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background 0.15s, border-color 0.15s, color 0.15s;
+        }
+        .mobile-cat-pill:hover { background: #fdf5ef; }
+        .mobile-cat-pill.active {
+            background: #724e2c;
+            border-color: #724e2c;
+            color: #fff;
+            font-weight: 700;
+        }
+        .mobile-cat-pill .cat-count {
+            font-size: 11px;
+            opacity: 0.75;
+        }
+
+        /* ── Main scroll area ── */
+        #menu-content {
+            flex: 1;
+            padding: 32px 32px 80px;
+        }
+
+        /* ── Menu cards ── */
+        .menu-card {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e8e0d8;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .menu-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(114,78,44,0.15); }
+
+        /* ── Item Modal ── */
+        #item-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+        }
+        #item-modal.open { display: flex; }
+        #modal-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+        }
+        #modal-box {
+            position: relative;
+            background: #fff;
+            border-radius: 16px;
+            width: 480px;
+            max-width: 95vw;
+            max-height: 90vh;
+            overflow-y: auto;
+            z-index: 101;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        #modal-img { width: 100%; height: 240px; object-fit: cover; object-position: center; }
+        #modal-img-placeholder { width: 100%; height: 240px; display: flex; align-items: center; justify-content: center; font-size: 80px; }
+        #modal-body { padding: 24px; }
+
+        /* ── Cart ── */
+        #cart-summary {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 360px;
+            z-index: 60;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            #category-sidebar { display: none !important; }
+            #mobile-cat-bar { display: flex; }
+            #page-body { flex-direction: column; }
+            #menu-content { padding: 20px 16px 100px; }
+            #cart-summary {
+                left: 12px;
+                right: 12px;
+                bottom: 12px;
+                width: auto;
+                border-radius: 14px;
+            }
+            #modal-box { border-radius: 12px; max-height: 95vh; }
+            #modal-img, #modal-img-placeholder { height: 200px; }
+        }
+    </style>
 </head>
-<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
+<body class="bg-gray-50">
+
     <!-- Navigation -->
-    <nav class="bg-white shadow-lg border-b-4" style="border-color: #724e2c;">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center space-x-8">
-                    <a href="{{ route('home') }}" class="campuseats-logo text-2xl">
-                        🍽️ CampusEats
-                    </a>
-                    <a href="{{ route('home') }}" class="text-gray-700 px-3 py-2 text-sm font-medium transition" style="hover:color: #724e2c;">
-                        ← Back to Vendors
-                    </a>
-                </div>
-                <div class="flex items-center space-x-4">
-                    @auth
-                        @if(auth()->user()->isStudent())
-                            <a href="{{ route('orders.my') }}" class="text-gray-700 px-3 py-2 text-sm font-medium transition flex items-center">
-                                <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
-                                </svg>
-                                My Orders
-                            </a>
-                        @endif
-                        <span class="text-gray-700 font-medium">{{ auth()->user()->name }}</span>
-                        <form action="{{ route('logout') }}" method="POST" class="inline">
-                            @csrf
-                            <button type="submit" class="text-gray-700 hover:text-red-600 px-3 py-2 rounded-md text-sm font-medium transition">
-                                Logout
-                            </button>
-                        </form>
-                    @else
-                        <a href="{{ route('login') }}" class="text-gray-700 px-3 py-2 text-sm font-medium transition">
-                            Login
-                        </a>
-                        <a href="{{ route('register') }}" class="text-white px-4 py-2 rounded-lg font-medium transition" style="background-color: #724e2c;">
-                            Join CampusEats
-                        </a>
-                    @endauth
-                </div>
+    <nav style="background:#fff; border-bottom: 4px solid #724e2c; position: sticky; top: 0; z-index: 50;">
+        <div style="max-width:1400px; margin:0 auto; padding:0 24px; display:flex; justify-content:space-between; align-items:center; height:56px;">
+            <div style="display:flex; align-items:center; gap:24px;">
+                <a href="{{ route('home') }}" style="font-size:20px; font-weight:800; color:#724e2c; text-decoration:none;">🍽️ CampusEats</a>
+                <a href="{{ route('home') }}" style="font-size:13px; color:#724e2c; text-decoration:none;">← Back to Vendors</a>
+            </div>
+            <div style="display:flex; align-items:center; gap:16px;">
+                @auth
+                    @if(auth()->user()->isStudent())
+                        <a href="{{ route('orders.my') }}" style="font-size:13px; color:#3c3028; text-decoration:none;">My Orders</a>
+                    @endif
+                    <span style="font-size:13px; color:#3c3028; font-weight:600;">{{ auth()->user()->name }}</span>
+                    <form action="{{ route('logout') }}" method="POST" style="display:inline;">
+                        @csrf
+                        <button type="submit" style="font-size:13px; color:#724e2c; background:none; border:none; cursor:pointer; font-weight:600;">Logout</button>
+                    </form>
+                @else
+                    <a href="{{ route('login') }}" style="font-size:13px; color:#724e2c; text-decoration:none; font-weight:600;">Login</a>
+                @endauth
             </div>
         </div>
     </nav>
 
     <!-- Vendor Header -->
-    <div class="text-white shadow-xl" style="background: linear-gradient(to right, #724e2c, #563517);">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div class="flex items-start justify-between">
-                <div class="flex-1">
-                    <div class="flex items-center gap-4 mb-3">
-                        <h1 class="text-4xl font-bold">{{ $vendor->vendor_name }}</h1>
-                        @if($isOpenNow)
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-semibold bg-green-500 text-white shadow">
-                                <span class="w-2 h-2 rounded-full bg-white inline-block"></span>
-                                Open Now
-                            </span>
-                        @else
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-semibold bg-red-500 text-white shadow">
-                                <span class="w-2 h-2 rounded-full bg-white inline-block"></span>
-                                Closed
-                            </span>
-                        @endif
-                    </div>
-                    <div class="space-y-2">
-                        <p class="flex items-center text-lg" style="color: #dfc3a9;">
-                            <svg class="h-6 w-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
-                            {{ $vendor->location }}
-                        </p>
-                        @if($vendor->contact_info)
-                            <p class="flex items-center" style="color: #dfc3a9;">
-                                <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
-                                </svg>
-                                {{ $vendor->contact_info }}
-                            </p>
-                        @endif
-                        @if($vendor->description)
-                            <p class="mt-3" style="color: #dfc3a9;">{{ $vendor->description }}</p>
-                        @endif
+    <div style="background: linear-gradient(to right, #724e2c, #563517); color:#fff; padding: 32px 24px;">
+        <div style="max-width:1400px; margin:0 auto; display:flex; align-items:flex-start; justify-content:space-between; gap:24px;">
+            <div style="flex:1;">
+                <div style="display:flex; align-items:center; gap:12px; margin-bottom:8px;">
+                    <h1 style="font-size:32px; font-weight:800; margin:0;">{{ $vendor->vendor_name }}</h1>
+                    @if($isOpenNow)
+                        <span style="background:#22c55e; color:#fff; font-size:12px; font-weight:700; padding:4px 12px; border-radius:999px;">● Open Now</span>
+                    @else
+                        <span style="background:#ef4444; color:#fff; font-size:12px; font-weight:700; padding:4px 12px; border-radius:999px;">● Closed</span>
+                    @endif
+                </div>
+                <p style="color:#dfc3a9; margin:4px 0;">📍 {{ $vendor->location }}</p>
+                @if($vendor->contact_info)<p style="color:#dfc3a9; margin:4px 0;">📞 {{ $vendor->contact_info }}</p>@endif
+                @if($vendor->description)<p style="color:#dfc3a9; margin:8px 0 0;">{{ $vendor->description }}</p>@endif
 
-                        {{-- Weekly Schedule --}}
-                        @if($vendor->operatingHours->isNotEmpty())
-                            @php
-                                $dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-                            @endphp
-                            <div class="mt-5">
-                                <h3 class="text-sm font-semibold uppercase tracking-wider mb-2" style="color: #dfc3a9;">
-                                    Weekly Schedule
-                                </h3>
-                                <div class="grid grid-cols-1 gap-1">
-                                    @foreach($vendor->operatingHours as $hours)
-                                        <div class="flex items-center justify-between text-sm py-1 border-b" style="border-color: rgba(255,255,255,0.15);">
-                                            <span class="font-medium" style="color: #f5efe8; min-width: 90px;">
-                                                {{ $dayNames[$hours->day_of_week] ?? 'Day ' . $hours->day_of_week }}
-                                            </span>
-                                            @if($hours->is_closed)
-                                                <span class="text-red-300 font-medium">Closed</span>
-                                            @else
-                                                <span style="color: #dfc3a9;">
-                                                    {{ date('g:i A', strtotime($hours->open_time)) }} – {{ date('g:i A', strtotime($hours->close_time)) }}
-                                                </span>
-                                            @endif
-                                        </div>
-                                    @endforeach
+                @if($vendor->operatingHours->isNotEmpty())
+                    @php $dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']; @endphp
+                    <div style="margin-top:16px;">
+                        <p style="font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#dfc3a9; margin-bottom:8px;">Weekly Schedule</p>
+                        <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:4px;">
+                            @foreach($vendor->operatingHours as $hours)
+                                <div style="display:flex; justify-content:space-between; font-size:13px; padding:3px 0; border-bottom:1px solid rgba(255,255,255,0.1);">
+                                    <span style="color:#f5efe8;">{{ $dayNames[$hours->day_of_week] }}</span>
+                                    @if($hours->is_closed)
+                                        <span style="color:#fca5a5;">Closed</span>
+                                    @else
+                                        <span style="color:#dfc3a9;">{{ date('g:i A', strtotime($hours->open_time)) }} – {{ date('g:i A', strtotime($hours->close_time)) }}</span>
+                                    @endif
                                 </div>
-                            </div>
-                        @endif
+                            @endforeach
+                        </div>
                     </div>
-                </div>
-                <div class="rounded-xl p-6 text-center backdrop-blur-sm" style="background: rgba(255,255,255,0.15);">
-                    <p class="text-sm mb-1" style="color: #dfc3a9;">Total Items</p>
-                    <p class="text-4xl font-bold">{{ $vendor->menuItems->count() }}</p>
-                </div>
+                @endif
+            </div>
+            <div style="background:rgba(255,255,255,0.15); border-radius:12px; padding:20px 28px; text-align:center; flex-shrink:0;">
+                <p style="font-size:12px; color:#dfc3a9; margin:0 0 4px;">Total Items</p>
+                <p style="font-size:36px; font-weight:800; margin:0;">{{ $vendor->menuItems->count() }}</p>
             </div>
         </div>
     </div>
 
-    <!-- Main Content -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        @if(session('success'))
-            <div class="bg-green-50 border-l-4 border-green-500 p-4 mb-6 rounded-r-lg shadow-md animate-pulse">
-                <p class="text-sm text-green-700 font-medium">{{ session('success') }}</p>
-            </div>
-        @endif
+    @if(session('success'))
+        <div style="background:#f0fdf4; border-left:4px solid #22c55e; padding:12px 24px; font-size:14px; color:#166534;">{{ session('success') }}</div>
+    @endif
 
-        @if(session('error'))
-            <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-r-lg shadow-md">
-                <p class="text-sm text-red-700 font-medium">{{ session('error') }}</p>
-            </div>
-        @endif
+    @if($vendor->menuItems->isEmpty())
+        <div style="text-align:center; padding:80px 24px; color:#9e8a78;">
+            <p style="font-size:20px; font-weight:600;">No menu items available yet.</p>
+        </div>
+    @else
 
-        @if($errors->any())
-            <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-r-lg shadow-md">
-                <ul class="list-disc list-inside text-sm text-red-700">
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+    <!-- ── Mobile category pill bar ── -->
+    @if(!$vendor->menuItems->isEmpty())
+    <div id="mobile-cat-bar">
+        @php $groupedForBar = $vendor->menuItems->groupBy('category'); @endphp
+        @foreach($groupedForBar as $category => $items)
+            @php $slug = Str::slug($category ?: 'other-items'); @endphp
+            <a class="mobile-cat-pill" data-target="cat-{{ $slug }}"
+               onclick="smoothScroll('cat-{{ $slug }}'); return false;" href="#cat-{{ $slug }}">
+                <span>{{ $category ?: 'Other' }}</span>
+                <span class="cat-count">{{ $items->count() }}</span>
+            </a>
+        @endforeach
+    </div>
+    @endif
 
-        @if($vendor->menuItems->isEmpty())
-            <div class="bg-white rounded-xl shadow-lg p-12 text-center">
-                <svg class="mx-auto h-24 w-24 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                </svg>
-                <h3 class="mt-4 text-2xl font-semibold text-gray-900">No menu items available</h3>
-                <p class="mt-2 text-gray-600">This vendor hasn't added any items yet. Check back soon!</p>
-            </div>
-        @else
-            <!-- Shopping Cart Summary (Sticky) - Dynamic Design -->
-            <div id="cart-summary" class="hidden fixed bottom-6 right-6 w-96 z-50">
-                <!-- Cart Header with Gradient -->
-                <div class="rounded-t-2xl p-4 shadow-2xl" style="background: linear-gradient(to right, #724e2c, #563517);">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-3">
-                            <div class="rounded-full p-2" style="background: rgba(255,255,255,0.2);">
-                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
-                                </svg>
-                            </div>
-                            <div>
-                                <h3 class="text-lg font-bold text-white">Your Cart</h3>
-                                <p class="text-xs text-white/80" id="cart-count">0 items</p>
-                            </div>
-                        </div>
-                        <button onclick="clearCart()" class="hover:bg-white/30 backdrop-blur-sm text-white p-2 rounded-full transition" style="background: rgba(255,255,255,0.2);">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
+    <!-- ── Page body: sidebar + content ── -->
+    <div id="page-body">
 
-                <!-- Cart Items with Glass Effect -->
-                <div class="bg-white/95 backdrop-blur-lg shadow-2xl max-h-80 overflow-y-auto">
-                    <div id="cart-items" class="p-4 space-y-3"></div>
-                </div>
+        <!-- Sidebar -->
+        <aside id="category-sidebar">
+            <span class="sidebar-label">Categories</span>
+            @php $groupedItems = $vendor->menuItems->groupBy('category'); @endphp
+            @foreach($groupedItems as $category => $items)
+                @php $slug = Str::slug($category ?: 'other-items'); @endphp
+                <a class="category-link" data-target="cat-{{ $slug }}"
+                   onclick="smoothScroll('cat-{{ $slug }}'); return false;" href="#cat-{{ $slug }}">
+                    <span>{{ $category ?: 'Other' }}</span>
+                    <span class="cat-count">{{ $items->count() }}</span>
+                </a>
+            @endforeach
+        </aside>
 
-                <!-- Cart Footer with Total -->
-                <div class="rounded-b-2xl p-4 shadow-2xl" style="background: linear-gradient(to right, #724e2c, #563517);">
-                    <div class="rounded-xl p-4 mb-3" style="background: rgba(255,255,255,0.2);">
-                        <div class="flex justify-between items-center">
-                            <span class="text-white font-semibold text-lg">Total Amount</span>
-                            <span id="cart-total" class="text-3xl font-bold text-white">₱0.00</span>
-                        </div>
-                    </div>
-                    <button onclick="proceedToCheckout()" class="w-full bg-white hover:bg-gray-100 px-6 py-4 rounded-xl font-bold shadow-lg transition transform hover:scale-105 flex items-center justify-center space-x-2" style="color: #724e2c;">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                        </svg>
-                        <span>Place Order Now</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Menu Items by Category -->
-            @php
-                $groupedItems = $vendor->menuItems->groupBy('category');
-            @endphp
+        <!-- Menu content -->
+        <main id="menu-content">
 
             @foreach($groupedItems as $category => $items)
-                <div class="mb-12">
-                    <h2 class="text-3xl font-bold text-gray-900 mb-6 pb-3 border-b-4" style="border-color: #724e2c;">
+                @php
+                    $slug = Str::slug($category ?: 'other-items');
+                    $colors = ['Rice Meals'=>'FFB84D','Breakfast'=>'4ECDC4','Main Dishes'=>'FF6B6B','Noodles & Pasta'=>'F7B731','Snacks'=>'5F27CD','Beverages'=>'00D2D3','Desserts'=>'FF9FF3'];
+                    $emojis = ['Rice Meals'=>'🍛','Breakfast'=>'🍳','Main Dishes'=>'🍖','Noodles & Pasta'=>'🍜','Snacks'=>'🥟','Beverages'=>'🥤','Desserts'=>'🍨'];
+                @endphp
+                <div id="cat-{{ $slug }}" style="margin-bottom:48px;">
+                    <h2 style="font-size:24px; font-weight:800; color:#3c3028; border-bottom:3px solid #724e2c; padding-bottom:10px; margin-bottom:20px;">
                         {{ $category ?: 'Other Items' }}
                     </h2>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:20px;">
                         @foreach($items as $item)
                             @php
-                                // Generate a consistent color based on category
-                                $colors = [
-                                    'Rice Meals' => ['bg' => 'FFB84D', 'text' => 'FFFFFF'],
-                                    'Breakfast' => ['bg' => '4ECDC4', 'text' => 'FFFFFF'],
-                                    'Main Dishes' => ['bg' => 'FF6B6B', 'text' => 'FFFFFF'],
-                                    'Noodles & Pasta' => ['bg' => 'F7B731', 'text' => 'FFFFFF'],
-                                    'Snacks' => ['bg' => '5F27CD', 'text' => 'FFFFFF'],
-                                    'Beverages' => ['bg' => '00D2D3', 'text' => 'FFFFFF'],
-                                    'Desserts' => ['bg' => 'FF9FF3', 'text' => 'FFFFFF'],
-                                ];
-                                $categoryColor = $colors[$item->category] ?? ['bg' => '6366F1', 'text' => 'FFFFFF'];
-                                
-                                // Food emojis by category
-                                $emojis = [
-                                    'Rice Meals' => '🍛',
-                                    'Breakfast' => '🍳',
-                                    'Main Dishes' => '🍖',
-                                    'Noodles & Pasta' => '🍜',
-                                    'Snacks' => '🥟',
-                                    'Beverages' => '🥤',
-                                    'Desserts' => '🍨',
-                                ];
+                                $bg = $colors[$item->category] ?? '6366F1';
                                 $emoji = $emojis[$item->category] ?? '🍽️';
                             @endphp
-                            <div class="bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition duration-300 border border-gray-200 {{ !$item->is_available ? 'opacity-60' : '' }}">
-                                <!-- Item Image -->
-                                <div class="relative overflow-hidden" style="height: 200px; background: linear-gradient(135deg, #{{ $categoryColor['bg'] }}22 0%, #{{ $categoryColor['bg'] }}44 100%);">
+                            <div class="menu-card {{ !$item->is_available ? '' : '' }}"
+                                 onclick="openModal({{ $item->id }}, '{{ addslashes($item->name) }}', '{{ addslashes($item->description) }}', {{ $item->price }}, '{{ $item->is_available ? 'true' : 'false' }}', '{{ $item->image_url ? Storage::url($item->image_url) : '' }}', '{{ addslashes($item->category) }}', '{{ $emoji }}')"
+                                 style="{{ !$item->is_available ? 'opacity:0.6;' : '' }}">
+                                <!-- Image -->
+                                <div style="position:relative; height:180px; background:linear-gradient(135deg,#{{ $bg }}22,#{{ $bg }}55); overflow:hidden;">
                                     @if($item->image_url)
                                         <img src="{{ Storage::url($item->image_url) }}" alt="{{ $item->name }}"
-                                             style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center center;">
+                                             style="width:100%; height:100%; object-fit:cover; object-position:{{ $item->image_position ?? 'center center' }}; display:block;">
                                     @else
-                                        <div class="absolute inset-0 flex items-center justify-center">
-                                            <div class="text-center">
-                                                <div class="text-8xl mb-2">{{ $emoji }}</div>
-                                                <div class="text-sm font-semibold text-gray-600">{{ $item->category }}</div>
-                                            </div>
-                                        </div>
+                                        <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:64px;">{{ $emoji }}</div>
                                     @endif
                                     @if(!$item->is_available)
-                                        <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                                            <span class="px-4 py-2 bg-red-500 text-white text-lg font-bold rounded-full">
-                                                SOLD OUT
-                                            </span>
+                                        <div style="position:absolute; inset:0; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center;">
+                                            <span style="background:#ef4444; color:#fff; font-weight:700; padding:6px 16px; border-radius:999px; font-size:13px;">SOLD OUT</span>
                                         </div>
                                     @else
-                                        <div class="absolute top-3 right-3">
-                                            <span class="px-3 py-1 bg-green-500 text-white text-xs font-bold rounded-full shadow-lg">
-                                                AVAILABLE
-                                            </span>
-                                        </div>
+                                        <span style="position:absolute; top:10px; right:10px; background:#22c55e; color:#fff; font-size:11px; font-weight:700; padding:3px 10px; border-radius:999px;">AVAILABLE</span>
                                     @endif
-                                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
-                                        <h3 class="text-xl font-bold text-white">{{ $item->name }}</h3>
+                                    <div style="position:absolute; bottom:0; left:0; right:0; background:linear-gradient(to top,rgba(0,0,0,0.7),transparent); padding:12px;">
+                                        <p style="color:#fff; font-weight:700; font-size:15px; margin:0;">{{ $item->name }}</p>
                                     </div>
                                 </div>
-
-                                <!-- Item Body -->
-                                <div class="p-6">
-                                    @if($item->category)
-                                        <span class="inline-block px-2 py-1 bg-indigo-50 text-indigo-700 text-xs font-semibold rounded-full mb-2">{{ $item->category }}</span>
-                                    @endif
-                                    <p class="text-gray-600 text-sm mb-4 h-12 overflow-hidden">{{ $item->description }}</p>
-                                    <div class="flex items-center justify-between mb-4">
-                                        <span class="text-3xl font-bold" style="color: #724e2c;">₱{{ number_format($item->price, 2) }}</span>
-                                    </div>
-
-                                    @if($item->is_available)
-                                        @auth
-                                            @if(auth()->user()->isStudent())
-                                                <div class="flex items-center space-x-2">
-                                                    <button onclick="decrementQuantity({{ $item->id }})" class="bg-gray-200 hover:bg-gray-300 text-gray-700 w-10 h-10 rounded-lg font-bold transition">
-                                                        -
-                                                    </button>
-                                                    <input type="number" id="qty-{{ $item->id }}" value="0" min="0" max="99" 
-                                                           class="w-16 text-center border-2 border-gray-300 rounded-lg py-2 font-bold"
-                                                           onchange="updateQuantity({{ $item->id }}, '{{ $item->name }}', {{ $item->price }})">
-                                                    <button onclick="incrementQuantity({{ $item->id }})" class="bg-gray-200 hover:bg-gray-300 text-gray-700 w-10 h-10 rounded-lg font-bold transition">
-                                                        +
-                                                    </button>
-                                                    <button onclick="addToCart({{ $item->id }}, '{{ $item->name }}', {{ $item->price }})" 
-                                                            class="flex-1 text-white px-4 py-2 rounded-lg font-semibold transition" style="background-color: #724e2c;">
-                                                        Add to Cart
-                                                    </button>
-                                                </div>
-                                            @endif
-                                        @else
-                                            <a href="{{ route('login') }}" class="block text-center text-white px-4 py-2 rounded-lg font-semibold transition" style="background-color: #724e2c;">
-                                                Login to Order
-                                            </a>
-                                        @endauth
-                                    @else
-                                        <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-2 rounded-lg text-center font-semibold">
-                                            Currently Unavailable
-                                        </div>
-                                    @endif
+                                <!-- Body -->
+                                <div style="padding:14px 16px;">
+                                    <p style="font-size:12px; color:#9e8a78; margin:0 0 6px;">{{ $item->category }}</p>
+                                    <p style="font-size:13px; color:#5c4a3a; margin:0 0 10px; height:36px; overflow:hidden;">{{ $item->description }}</p>
+                                    <p style="font-size:20px; font-weight:800; color:#724e2c; margin:0;">₱{{ number_format($item->price, 2) }}</p>
                                 </div>
                             </div>
                         @endforeach
                     </div>
                 </div>
             @endforeach
-        @endif
+
+        </main>
     </div>
+
+    <!-- ── Item Modal ── -->
+    <div id="item-modal">
+        <div id="modal-backdrop" onclick="closeModal()"></div>
+        <div id="modal-box">
+            <div id="modal-img-wrap"></div>
+            <div id="modal-body">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+                    <div>
+                        <p id="modal-category" style="font-size:12px; color:#9e8a78; margin:0 0 4px;"></p>
+                        <h2 id="modal-name" style="font-size:22px; font-weight:800; color:#3c3028; margin:0;"></h2>
+                    </div>
+                    <button onclick="closeModal()" style="background:none; border:none; font-size:22px; cursor:pointer; color:#9e8a78; line-height:1; padding:0 0 0 12px;">✕</button>
+                </div>
+                <p id="modal-desc" style="font-size:14px; color:#5c4a3a; margin:0 0 16px;"></p>
+                <p id="modal-price" style="font-size:28px; font-weight:800; color:#724e2c; margin:0 0 20px;"></p>
+
+                <div id="modal-actions"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Sticky Cart ── -->
+    <div id="cart-summary" style="display:none;">
+        <div style="background:linear-gradient(to right,#724e2c,#563517); padding:16px;">
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <span style="font-size:20px;">🛒</span>
+                    <div>
+                        <p style="color:#fff; font-weight:700; font-size:15px; margin:0;">Your Cart</p>
+                        <p id="cart-count" style="color:rgba(255,255,255,0.7); font-size:12px; margin:0;">0 items</p>
+                    </div>
+                </div>
+                <button onclick="clearCart()" style="background:rgba(255,255,255,0.2); border:none; color:#fff; border-radius:50%; width:32px; height:32px; cursor:pointer; font-size:16px;">✕</button>
+            </div>
+        </div>
+        <div style="background:#fff; max-height:240px; overflow-y:auto;">
+            <div id="cart-items" style="padding:12px; display:flex; flex-direction:column; gap:8px;"></div>
+        </div>
+        <div style="background:linear-gradient(to right,#724e2c,#563517); padding:16px;">
+            <div style="background:rgba(255,255,255,0.15); border-radius:10px; padding:12px 16px; display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <span style="color:#fff; font-weight:600;">Total</span>
+                <span id="cart-total" style="color:#fff; font-size:22px; font-weight:800;">₱0.00</span>
+            </div>
+            <button onclick="proceedToCheckout()" style="width:100%; background:#fff; color:#724e2c; border:none; border-radius:10px; padding:14px; font-size:15px; font-weight:700; cursor:pointer;">
+                Place Order Now →
+            </button>
+        </div>
+    </div>
+
+    @endif
 
     <script>
         let cart = [];
 
-        function incrementQuantity(itemId) {
-            const input = document.getElementById(`qty-${itemId}`);
-            const currentValue = parseInt(input.value) || 0;
-            if (currentValue < 99) {
-                input.value = currentValue + 1;
+        // ── Sidebar scroll spy ──
+        function setActiveLink(id) {
+            // Desktop sidebar
+            document.querySelectorAll('.category-link').forEach(function(l) { l.classList.remove('active'); });
+            var a = document.querySelector('.category-link[data-target="' + id + '"]');
+            if (a) a.classList.add('active');
+            // Mobile pills
+            document.querySelectorAll('.mobile-cat-pill').forEach(function(l) { l.classList.remove('active'); });
+            var m = document.querySelector('.mobile-cat-pill[data-target="' + id + '"]');
+            if (m) {
+                m.classList.add('active');
+                // Scroll pill into view
+                m.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
             }
         }
 
-        function decrementQuantity(itemId) {
-            const input = document.getElementById(`qty-${itemId}`);
-            const currentValue = parseInt(input.value) || 0;
-            if (currentValue > 0) {
-                input.value = currentValue - 1;
-            }
+        function smoothScroll(id) {
+            var el = document.getElementById(id);
+            if (!el) return;
+            // Account for sticky nav (56px) + mobile cat bar (~50px on mobile)
+            var mobileBar = document.getElementById('mobile-cat-bar');
+            var barH = (mobileBar && mobileBar.offsetHeight) ? mobileBar.offsetHeight : 0;
+            var navHeight = 56 + barH + 8;
+            var top = el.getBoundingClientRect().top + window.scrollY - navHeight;
+            window.scrollTo({ top: top, behavior: 'smooth' });
+            setActiveLink(id);
         }
 
-        function updateQuantity(itemId, itemName, price) {
-            const qty = parseInt(document.getElementById(`qty-${itemId}`).value) || 0;
-            if (qty > 0) {
-                addToCart(itemId, itemName, price);
-            }
-        }
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set first active
+            var first = document.querySelector('.category-link');
+            if (first) first.classList.add('active');
 
-        function addToCart(itemId, itemName, price) {
-            const qty = parseInt(document.getElementById(`qty-${itemId}`).value) || 0;
-            
-            if (qty <= 0) {
-                alert('Please select a quantity greater than 0');
-                return;
-            }
-
-            // Check if item already in cart
-            const existingIndex = cart.findIndex(item => item.id === itemId);
-            
-            if (existingIndex >= 0) {
-                cart[existingIndex].quantity = qty;
-            } else {
-                cart.push({
-                    id: itemId,
-                    name: itemName,
-                    price: price,
-                    quantity: qty
+            // Scroll spy on window
+            window.addEventListener('scroll', function() {
+                var sections = document.querySelectorAll('[id^="cat-"]');
+                var current = null;
+                sections.forEach(function(s) {
+                    if (s.getBoundingClientRect().top <= 100) current = s.id;
                 });
+                if (current) setActiveLink(current);
+            });
+        });
+
+        // ── Modal ──
+        function openModal(id, name, desc, price, available, imageUrl, category, emoji) {
+            var wrap = document.getElementById('modal-img-wrap');
+            if (imageUrl) {
+                wrap.innerHTML = '<img id="modal-img" src="' + imageUrl + '" alt="' + name + '">';
+            } else {
+                wrap.innerHTML = '<div id="modal-img-placeholder" style="background:#f5ede6;">' + emoji + '</div>';
+            }
+            document.getElementById('modal-name').textContent = name;
+            document.getElementById('modal-desc').textContent = desc;
+            document.getElementById('modal-price').textContent = '₱' + parseFloat(price).toFixed(2);
+            document.getElementById('modal-category').textContent = category;
+
+            var actions = document.getElementById('modal-actions');
+            if (available === 'true') {
+                @auth
+                    @if(auth()->user()->isStudent())
+                    actions.innerHTML = `
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <button onclick="modalDecrement()" style="width:40px; height:40px; border-radius:8px; border:1px solid #e8e0d8; background:#f9f5f2; font-size:20px; cursor:pointer; font-weight:700;">−</button>
+                            <input id="modal-qty" type="number" value="1" min="1" max="99"
+                                   style="width:60px; text-align:center; border:2px solid #e8e0d8; border-radius:8px; padding:8px; font-size:16px; font-weight:700;">
+                            <button onclick="modalIncrement()" style="width:40px; height:40px; border-radius:8px; border:1px solid #e8e0d8; background:#f9f5f2; font-size:20px; cursor:pointer; font-weight:700;">+</button>
+                            <button onclick="modalAddToCart(${id}, '${name.replace(/'/g,"\\'")}', ${price})"
+                                    style="flex:1; background:#724e2c; color:#fff; border:none; border-radius:8px; padding:12px; font-size:15px; font-weight:700; cursor:pointer;">
+                                Add to Cart
+                            </button>
+                        </div>`;
+                    @else
+                    actions.innerHTML = '<p style="color:#9e8a78; font-size:14px;">Only students can place orders.</p>';
+                    @endif
+                @else
+                actions.innerHTML = '<a href="{{ route("login") }}" style="display:block; text-align:center; background:#724e2c; color:#fff; border-radius:8px; padding:12px; font-weight:700; text-decoration:none;">Login to Order</a>';
+                @endauth
+            } else {
+                actions.innerHTML = '<div style="background:#fef2f2; border:1px solid #fecaca; color:#dc2626; padding:12px; border-radius:8px; text-align:center; font-weight:600;">Currently Unavailable</div>';
             }
 
-            updateCartDisplay();
+            document.getElementById('item-modal').classList.add('open');
+            document.body.style.overflow = 'hidden';
         }
 
-        function updateCartDisplay() {
-            const cartSummary = document.getElementById('cart-summary');
-            const cartItems = document.getElementById('cart-items');
-            const cartTotal = document.getElementById('cart-total');
-            const cartCount = document.getElementById('cart-count');
+        function closeModal() {
+            document.getElementById('item-modal').classList.remove('open');
+            document.body.style.overflow = '';
+        }
 
-            if (cart.length === 0) {
-                cartSummary.classList.add('hidden');
-                return;
+        function modalIncrement() {
+            var input = document.getElementById('modal-qty');
+            if (parseInt(input.value) < 99) input.value = parseInt(input.value) + 1;
+        }
+        function modalDecrement() {
+            var input = document.getElementById('modal-qty');
+            if (parseInt(input.value) > 1) input.value = parseInt(input.value) - 1;
+        }
+        function modalAddToCart(itemId, itemName, price) {
+            var qty = parseInt(document.getElementById('modal-qty').value) || 1;
+            var existingIndex = cart.findIndex(function(i) { return i.id === itemId; });
+            if (existingIndex >= 0) {
+                cart[existingIndex].quantity += qty;
+            } else {
+                cart.push({ id: itemId, name: itemName, price: price, quantity: qty });
             }
+            updateCartDisplay();
+            closeModal();
+        }
 
-            cartSummary.classList.remove('hidden');
+        // ── Cart ──
+        function updateCartDisplay() {
+            var summary = document.getElementById('cart-summary');
+            var itemsEl = document.getElementById('cart-items');
+            var totalEl = document.getElementById('cart-total');
+            var countEl = document.getElementById('cart-count');
 
-            let total = 0;
-            let totalItems = 0;
-            let html = '';
+            if (cart.length === 0) { summary.style.display = 'none'; return; }
+            summary.style.display = 'block';
 
-            cart.forEach((item, index) => {
-                const itemTotal = item.price * item.quantity;
-                total += itemTotal;
-                totalItems += item.quantity;
-                html += `
-                    <div class="rounded-xl p-3 border hover:shadow-md transition" style="background: linear-gradient(to right, #f5efe8, #dfc3a9); border-color: #dfc3a9;">
-                        <div class="flex items-start justify-between">
-                            <div class="flex-1 pr-2">
-                                <div class="flex items-center space-x-2 mb-1">
-                                    <span class="text-white text-xs font-bold px-2 py-1 rounded-full" style="background-color: #724e2c;">${item.quantity}x</span>
-                                    <span class="font-semibold text-gray-800 text-sm">${item.name}</span>
-                                </div>
-                                <div class="flex items-center justify-between mt-2">
-                                    <span class="text-xs text-gray-600">₱${item.price.toFixed(2)} each</span>
-                                    <span class="font-bold" style="color: #724e2c;">₱${itemTotal.toFixed(2)}</span>
-                                </div>
-                            </div>
-                            <button onclick="removeFromCart(${index})" class="bg-red-100 hover:bg-red-200 text-red-600 p-1.5 rounded-lg transition flex-shrink-0">
-                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                `;
+            var total = 0, totalItems = 0, html = '';
+            cart.forEach(function(item, index) {
+                var itemTotal = item.price * item.quantity;
+                total += itemTotal; totalItems += item.quantity;
+                html += '<div style="background:#fdf5ef; border-radius:8px; padding:10px 12px;">'
+                    + '<div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">'
+                    + '<span style="font-size:13px; font-weight:600; color:#3c3028; flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">' + item.name + '</span>'
+                    + '<span style="font-size:13px; font-weight:700; color:#724e2c; white-space:nowrap;">₱' + itemTotal.toFixed(2) + '</span>'
+                    + '</div>'
+                    + '<div style="display:flex; align-items:center; gap:6px; margin-top:8px;">'
+                    + '<button onclick="cartDecrement(' + index + ')" style="width:28px; height:28px; border-radius:6px; border:1px solid #e8e0d8; background:#fff; font-size:16px; cursor:pointer; font-weight:700; line-height:1;">−</button>'
+                    + '<span style="min-width:28px; text-align:center; font-size:14px; font-weight:700; color:#3c3028;">' + item.quantity + '</span>'
+                    + '<button onclick="cartIncrement(' + index + ')" style="width:28px; height:28px; border-radius:6px; border:1px solid #e8e0d8; background:#fff; font-size:16px; cursor:pointer; font-weight:700; line-height:1;">+</button>'
+                    + '<button onclick="removeFromCart(' + index + ')" style="margin-left:auto; background:#fee2e2; border:none; color:#dc2626; border-radius:6px; width:28px; height:28px; cursor:pointer; font-size:14px; line-height:1;">✕</button>'
+                    + '</div>'
+                    + '</div>';
             });
-
-            cartItems.innerHTML = html;
-            cartTotal.textContent = `₱${total.toFixed(2)}`;
-            cartCount.textContent = `${totalItems} item${totalItems !== 1 ? 's' : ''}`;
+            itemsEl.innerHTML = html;
+            totalEl.textContent = '₱' + total.toFixed(2);
+            countEl.textContent = totalItems + ' item' + (totalItems !== 1 ? 's' : '');
         }
 
         function removeFromCart(index) {
-            const item = cart[index];
-            document.getElementById(`qty-${item.id}`).value = 0;
             cart.splice(index, 1);
             updateCartDisplay();
         }
 
-        function clearCart() {
-            if (confirm('Are you sure you want to clear your cart?')) {
-                cart.forEach(item => {
-                    document.getElementById(`qty-${item.id}`).value = 0;
-                });
-                cart = [];
+        function cartIncrement(index) {
+            if (cart[index] && cart[index].quantity < 99) {
+                cart[index].quantity++;
                 updateCartDisplay();
             }
         }
 
-        function proceedToCheckout() {
-            if (cart.length === 0) {
-                alert('Your cart is empty!');
-                return;
+        function cartDecrement(index) {
+            if (!cart[index]) return;
+            if (cart[index].quantity > 1) {
+                cart[index].quantity--;
+            } else {
+                cart.splice(index, 1);
             }
+            updateCartDisplay();
+        }
 
-            @guest
-                window.location.href = '{{ route("login") }}';
-                return;
-            @endguest
+        function clearCart() {
+            if (confirm('Clear your cart?')) { cart = []; updateCartDisplay(); }
+        }
 
-            // Create form and submit
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = '{{ route("orders.store") }}';
-
-            // CSRF token
-            const csrfInput = document.createElement('input');
-            csrfInput.type = 'hidden';
-            csrfInput.name = '_token';
-            csrfInput.value = document.querySelector('meta[name="csrf-token"]').content;
-            form.appendChild(csrfInput);
-
-            // Vendor ID
-            const vendorInput = document.createElement('input');
-            vendorInput.type = 'hidden';
-            vendorInput.name = 'vendor_id';
-            vendorInput.value = '{{ $vendor->id }}';
-            form.appendChild(vendorInput);
-
-            // Cart items
-            cart.forEach((item, index) => {
-                const itemIdInput = document.createElement('input');
-                itemIdInput.type = 'hidden';
-                itemIdInput.name = `items[${index}][menu_item_id]`;
-                itemIdInput.value = item.id;
-                form.appendChild(itemIdInput);
-
-                const qtyInput = document.createElement('input');
-                qtyInput.type = 'hidden';
-                qtyInput.name = `items[${index}][quantity]`;
-                qtyInput.value = item.quantity;
-                form.appendChild(qtyInput);
+        function proceedToCheckout() {
+            if (cart.length === 0) { alert('Your cart is empty!'); return; }
+            @guest window.location.href = '{{ route("login") }}'; return; @endguest
+            var form = document.createElement('form');
+            form.method = 'POST'; form.action = '{{ route("orders.store") }}';
+            var csrf = document.createElement('input'); csrf.type = 'hidden'; csrf.name = '_token'; csrf.value = document.querySelector('meta[name="csrf-token"]').content;
+            form.appendChild(csrf);
+            var vid = document.createElement('input'); vid.type = 'hidden'; vid.name = 'vendor_id'; vid.value = '{{ $vendor->id }}';
+            form.appendChild(vid);
+            cart.forEach(function(item, index) {
+                var ii = document.createElement('input'); ii.type = 'hidden'; ii.name = 'items[' + index + '][menu_item_id]'; ii.value = item.id; form.appendChild(ii);
+                var qi = document.createElement('input'); qi.type = 'hidden'; qi.name = 'items[' + index + '][quantity]'; qi.value = item.quantity; form.appendChild(qi);
             });
-
-            document.body.appendChild(form);
-            form.submit();
+            document.body.appendChild(form); form.submit();
         }
     </script>
 </body>

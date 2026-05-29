@@ -3,263 +3,460 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Menu Item - CampusEats</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Add Menu Item — CampusEats</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>
+        * { box-sizing: border-box; }
+        body { background: #f5efe8; font-family: system-ui, -apple-system, sans-serif; margin: 0; }
+        .top-nav { background: #fff; border-bottom: 3px solid #724e2c; position: sticky; top: 0; z-index: 50; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 56px; }
+        .nav-brand { font-size: 18px; font-weight: 800; color: #724e2c; text-decoration: none; }
+        .nav-links { display: flex; gap: 4px; }
+        .nav-link { padding: 6px 14px; border-radius: 8px; font-size: 13px; font-weight: 500; color: #5c4a3a; text-decoration: none; transition: background 0.15s; }
+        .nav-link:hover { background: #fdf5ef; }
+        .nav-link.active { background: #fdf0e6; color: #724e2c; font-weight: 700; }
+        .nav-right { display: flex; align-items: center; gap: 12px; font-size: 13px; color: #5c4a3a; }
+        .nav-logout { background: none; border: none; font-size: 13px; color: #9e8a78; cursor: pointer; font-weight: 500; }
+        .nav-logout:hover { color: #724e2c; }
+
+        .page { max-width: 1400px; margin: 0 auto; padding: 28px clamp(16px, 4vw, 48px) 64px; display: grid; grid-template-columns: 1fr 340px; gap: 24px; align-items: start; }
+        .card { background: #fff; border-radius: 16px; box-shadow: 0 1px 4px rgba(114,78,44,0.08), 0 4px 16px rgba(114,78,44,0.05); overflow: hidden; }
+        .card-header { padding: 18px 22px 0; display: flex; align-items: center; gap: 10px; }
+        .card-icon { width: 36px; height: 36px; border-radius: 10px; background: #fdf0e6; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+        .card-title { font-size: 15px; font-weight: 700; color: #3c3028; margin: 0; }
+        .card-subtitle { font-size: 12px; color: #9e8a78; margin: 2px 0 0; }
+        .card-body { padding: 18px 22px 22px; }
+
+        .field { margin-bottom: 16px; }
+        .field label { display: block; font-size: 12px; font-weight: 700; color: #5c4a3a; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.04em; }
+        .field input, .field textarea, .field select {
+            width: 100%; padding: 10px 14px; border-radius: 10px;
+            border: 1.5px solid #e8d5c4; font-size: 14px; color: #3c3028;
+            background: #fdfaf8; transition: border-color 0.15s, box-shadow 0.15s;
+            outline: none; font-family: inherit;
+        }
+        .field input:focus, .field textarea:focus { border-color: #724e2c; box-shadow: 0 0 0 3px rgba(114,78,44,0.1); }
+        .field textarea { resize: vertical; min-height: 80px; }
+        .field .error { font-size: 12px; color: #dc2626; margin-top: 4px; }
+        .two-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+        /* Category pills */
+        .cat-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+        .cat-pill {
+            padding: 4px 12px; border-radius: 999px; font-size: 12px; font-weight: 600;
+            background: #fdf0e6; color: #724e2c; border: 1.5px solid #e8d5c4;
+            cursor: pointer; transition: background 0.15s, border-color 0.15s;
+        }
+        .cat-pill:hover { background: #f5e0cc; border-color: #724e2c; }
+
+        /* Image upload */
+        .img-upload-area {
+            border: 2px dashed #e8d5c4; border-radius: 12px; padding: 20px;
+            text-align: center; cursor: pointer; transition: border-color 0.15s;
+            background: #fdfaf8;
+        }
+        .img-upload-area:hover { border-color: #724e2c; }
+        .img-preview { width: 100%; height: 180px; object-fit: cover; border-radius: 8px; margin-bottom: 12px; display: none; }
+        .img-upload-btn {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 8px 16px; border-radius: 8px;
+            background: #fdf0e6; color: #724e2c; border: 1.5px solid #e8d5c4;
+            font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.15s;
+        }
+        .img-upload-btn:hover { background: #f5e0cc; }
+
+        /* Availability toggle */
+        .avail-toggle { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+        .avail-toggle input { display: none; }
+        .toggle-track { width: 44px; height: 24px; border-radius: 999px; background: #e8d5c4; position: relative; transition: background 0.2s; flex-shrink: 0; }
+        .toggle-track.on { background: #22c55e; }
+        .toggle-thumb { position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: left 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+        .toggle-track.on .toggle-thumb { left: 23px; }
+        .avail-label { font-size: 13px; font-weight: 600; color: #3c3028; }
+
+        /* Buttons */
+        .btn-primary { background: #724e2c; color: #fff; border: none; padding: 12px 28px; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; transition: background 0.15s; }
+        .btn-primary:hover { background: #563517; }
+        .btn-cancel { background: #fdf5ef; color: #724e2c; border: 1.5px solid #e8d5c4; padding: 12px 20px; border-radius: 10px; font-size: 14px; font-weight: 600; text-decoration: none; transition: background 0.15s; }
+        .btn-cancel:hover { background: #f5e0cc; }
+        .btn-row { display: flex; gap: 10px; margin-top: 20px; }
+
+        /* Live preview card */
+        .preview-card { border-radius: 14px; overflow: hidden; border: 1px solid #f0e6dc; box-shadow: 0 1px 4px rgba(114,78,44,0.08); }
+        .preview-img { width: 100%; height: 180px; object-fit: cover; object-position: center; display: block; }
+        .preview-img-placeholder { width: 100%; height: 180px; display: flex; align-items: center; justify-content: center; font-size: 64px; }
+        .preview-body { padding: 14px 16px 16px; background: #fff; }
+        .preview-cat { font-size: 11px; color: #9e8a78; margin: 0 0 4px; }
+        .preview-name { font-size: 16px; font-weight: 700; color: #3c3028; margin: 0 0 4px; }
+        .preview-desc { font-size: 12px; color: #5c4a3a; margin: 0 0 10px; height: 32px; overflow: hidden; }
+        .preview-price { font-size: 20px; font-weight: 800; color: #724e2c; margin: 0; }
+        .preview-avail { position: absolute; top: 10px; right: 10px; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 999px; }
+
+        /* Category manager */
+        .cat-manager-input { display: flex; gap: 8px; margin-bottom: 10px; }
+        .cat-manager-input input { flex: 1; padding: 8px 12px; border-radius: 8px; border: 1.5px solid #e8d5c4; font-size: 13px; color: #3c3028; background: #fdfaf8; outline: none; font-family: inherit; }
+        .cat-manager-input input:focus { border-color: #724e2c; }
+        .cat-add-btn { padding: 8px 14px; background: #724e2c; color: #fff; border: none; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; }
+        .cat-add-btn:hover { background: #563517; }
+        .cat-list { display: flex; flex-wrap: wrap; gap: 6px; }
+        .cat-item {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 5px 10px 5px 12px; border-radius: 999px;
+            background: #fdf0e6; color: #724e2c; border: 1.5px solid #e8d5c4;
+            font-size: 12px; font-weight: 600;
+        }
+        .cat-item button { background: none; border: none; color: #9e8a78; cursor: pointer; font-size: 14px; line-height: 1; padding: 0; }
+        .cat-item button:hover { color: #dc2626; }
+        .cat-use-btn { background: none; border: none; color: #724e2c; font-size: 12px; font-weight: 600; cursor: pointer; text-decoration: underline; padding: 0; }
+
+        @media (max-width: 900px) {
+            .page { grid-template-columns: 1fr; }
+            .nav-links { display: none; }
+        }
+    </style>
 </head>
-<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
-    <!-- Navigation -->
-    <nav class="bg-white shadow-lg border-b-4 border-indigo-500">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center space-x-8">
-                    <h1 class="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">🍽️ CampusEats</h1>
-                    <div class="hidden md:flex space-x-4">
-                        <a href="{{ route('vendor.dashboard') }}" class="text-gray-700 hover:text-indigo-600 px-3 py-2 text-sm font-medium transition">
-                            Dashboard
-                        </a>
-                        <a href="{{ route('vendor.menu-items.index') }}" class="text-indigo-600 border-b-2 border-indigo-600 px-3 py-2 text-sm font-medium">
-                            Menu Items
-                        </a>
-                        <a href="{{ route('vendor.orders') }}" class="text-gray-700 hover:text-indigo-600 px-3 py-2 text-sm font-medium transition">
-                            Orders
-                        </a>
-                        <a href="{{ route('vendor.profile') }}" class="text-gray-700 hover:text-indigo-600 px-3 py-2 text-sm font-medium transition">
-                            Profile
-                        </a>
-                    </div>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <span class="text-gray-700 font-medium">{{ auth()->user()->name }}</span>
-                    <form action="{{ route('logout') }}" method="POST" class="inline">
-                        @csrf
-                        <button type="submit" class="text-gray-700 hover:text-red-600 px-3 py-2 rounded-md text-sm font-medium transition">
-                            Logout
-                        </button>
-                    </form>
-                </div>
+<body>
+    <nav class="top-nav">
+        <div style="display:flex; align-items:center; gap:24px;">
+            <a href="{{ route('vendor.dashboard') }}" class="nav-brand">🍽️ CampusEats</a>
+            <div class="nav-links">
+                <a href="{{ route('vendor.dashboard') }}" class="nav-link">Dashboard</a>
+                <a href="{{ route('vendor.menu-items.index') }}" class="nav-link active">Menu Items</a>
+                <a href="{{ route('vendor.orders') }}" class="nav-link">Orders</a>
+                <a href="{{ route('vendor.profile') }}" class="nav-link">Profile</a>
             </div>
+        </div>
+        <div class="nav-right">
+            <span>{{ auth()->user()->name }}</span>
+            <form action="{{ route('logout') }}" method="POST">@csrf<button type="submit" class="nav-logout">Logout</button></form>
         </div>
     </nav>
 
-    <!-- Header -->
-    <div class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-xl">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div class="flex items-center">
-                <a href="{{ route('vendor.menu-items.index') }}" class="mr-4 hover:bg-white hover:bg-opacity-20 p-2 rounded-lg transition">
-                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                    </svg>
-                </a>
-                <div>
-                    <h2 class="text-3xl font-bold">Add New Menu Item</h2>
-                    <p class="mt-1 text-indigo-100">Create a new item for your menu</p>
-                </div>
+    <div style="background: linear-gradient(135deg, #724e2c 0%, #563517 100%); color:#fff; padding:28px 24px 48px; position:relative;">
+        <div style="position:absolute; bottom:0; left:0; right:0; height:28px; background:#f5efe8; clip-path:ellipse(55% 100% at 50% 100%);"></div>
+        <div style="max-width:1100px; margin:0 auto; display:flex; align-items:center; gap:12px;">
+            <a href="{{ route('vendor.menu-items.index') }}" style="background:rgba(255,255,255,0.15); color:#fff; width:36px; height:36px; border-radius:8px; display:flex; align-items:center; justify-content:center; text-decoration:none; font-size:18px; flex-shrink:0;">←</a>
+            <div>
+                <h2 style="font-size:24px; font-weight:800; color:#fff; margin:0 0 4px;">Add New Menu Item</h2>
+                <p style="font-size:13px; color:#dfc3a9; margin:0;">Create a new item for your menu</p>
             </div>
         </div>
     </div>
 
-    <!-- Main Content -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Form Section -->
-            <div class="lg:col-span-2">
-                <div class="bg-white rounded-xl shadow-lg p-8">
-                    <h3 class="text-2xl font-bold text-gray-900 mb-6">Item Details</h3>
-                    
-                    <form action="{{ route('vendor.menu-items.store') }}" method="POST" enctype="multipart/form-data">
+    <div class="page">
+
+        <!-- Left: Form -->
+        <div style="display:flex; flex-direction:column; gap:20px;">
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">📝</div>
+                    <div><p class="card-title">Item Details</p><p class="card-subtitle">Fill in the information below</p></div>
+                </div>
+                <div class="card-body">
+                    <form id="item-form" action="{{ route('vendor.menu-items.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
-                        
-                        <!-- Name -->
-                        <div class="mb-6">
-                            <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">Item Name *</label>
+
+                        <div class="field">
+                            <label>Item Name <span style="color:#ef4444;">*</span></label>
                             <input type="text" name="name" id="name" value="{{ old('name') }}" required
-                                   class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                                   placeholder="e.g., Chicken Adobo">
-                            @error('name')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
+                                   placeholder="e.g., Chicken Adobo" oninput="updatePreview()">
+                            @error('name')<p class="error">{{ $message }}</p>@enderror
                         </div>
 
-                        <!-- Description -->
-                        <div class="mb-6">
-                            <label for="description" class="block text-sm font-semibold text-gray-700 mb-2">Description</label>
-                            <textarea name="description" id="description" rows="3"
-                                      class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                                      placeholder="Describe your dish...">{{ old('description') }}</textarea>
-                            @error('description')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
+                        <div class="field">
+                            <label>Description</label>
+                            <textarea name="description" id="description" placeholder="Describe your dish..." oninput="updatePreview()">{{ old('description') }}</textarea>
+                            @error('description')<p class="error">{{ $message }}</p>@enderror
                         </div>
 
-                        <!-- Price and Category Row -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                            <!-- Price -->
-                            <div>
-                                <label for="price" class="block text-sm font-semibold text-gray-700 mb-2">Price (₱) *</label>
+                        <div class="two-fields">
+                            <div class="field">
+                                <label>Price (₱) <span style="color:#ef4444;">*</span></label>
                                 <input type="number" name="price" id="price" value="{{ old('price') }}" step="0.01" min="0" required
-                                       class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                                       placeholder="0.00">
-                                @error('price')
-                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                @enderror
+                                       placeholder="0.00" oninput="updatePreview()">
+                                @error('price')<p class="error">{{ $message }}</p>@enderror
                             </div>
-
-                            <!-- Category -->
-                            <div>
-                                <label for="category" class="block text-sm font-semibold text-gray-700 mb-2">Category</label>
+                            <div class="field">
+                                <label>Category</label>
                                 <input type="text" name="category" id="category" value="{{ old('category') }}"
-                                       list="category-suggestions" maxlength="100"
-                                       class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                                       placeholder="e.g., Rice Meals, Snacks...">
-                                <datalist id="category-suggestions">
-                                    @foreach($existingCategories as $cat)
-                                        <option value="{{ $cat }}">
-                                    @endforeach
-                                </datalist>
+                                       placeholder="e.g., Rice Meals" oninput="updatePreview()">
+                                @error('category')<p class="error">{{ $message }}</p>@enderror
                                 @if($existingCategories->isNotEmpty())
-                                    <div class="flex flex-wrap gap-2 mt-2">
+                                    <div class="cat-pills" id="cat-pills">
                                         @foreach($existingCategories as $cat)
-                                            <button type="button" onclick="document.getElementById('category').value='{{ $cat }}'"
-                                                    class="px-3 py-1 bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs rounded-full hover:bg-indigo-100 transition">
-                                                {{ $cat }}
-                                            </button>
+                                            <button type="button" class="cat-pill" onclick="setCategory('{{ addslashes($cat) }}')">{{ $cat }}</button>
                                         @endforeach
                                     </div>
                                 @endif
-                                @error('category')
-                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                @enderror
                             </div>
                         </div>
 
-                        <!-- Image Upload -->
-                        <div class="mb-6">
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Item Image</label>
-                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-indigo-400 transition">
-                                <img id="image-preview" src="" alt="Preview" class="hidden mx-auto mb-3 h-40 w-full object-cover rounded-lg">
-                                <input type="file" name="image" id="image" accept="image/jpeg,image/png,image/gif,image/webp"
-                                       class="hidden" onchange="previewImage(this)">
-                                <label for="image" class="cursor-pointer inline-flex items-center px-4 py-2 bg-indigo-50 border border-indigo-300 text-indigo-700 rounded-lg hover:bg-indigo-100 transition text-sm font-medium">
-                                    <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                    </svg>
-                                    Choose Image
-                                </label>
-                                <p id="image-filename" class="mt-2 text-xs text-gray-500">JPEG, PNG, GIF, WebP — max 2MB</p>
-                            </div>
-                            @error('image')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
+                        <!-- Image upload + reposition (combined) -->
+                        <div class="field">
+                            <label>Item Image</label>
+                            <input type="file" name="image" id="image" accept="image/jpeg,image/png,image/gif,image/webp"
+                                   style="display:none;" onchange="previewImage(this)">
+                            <input type="hidden" name="image_position" id="image_position" value="center center">
 
+                            <!-- Empty state: click to upload -->
+                            <div id="upload-trigger"
+                                 style="border:2px dashed #e8d5c4; border-radius:12px; padding:32px; text-align:center; cursor:pointer; background:#fdfaf8;"
+                                 onclick="document.getElementById('image').click()">
+                                <span class="img-upload-btn">📷 Choose Image</span>
+                                <p style="font-size:12px; color:#9e8a78; margin:8px 0 0;">JPEG, PNG, GIF, WebP — max 2MB</p>
+                            </div>
+
+                            <!-- Canvas shown after image selected — drag to reposition -->
+                            <div id="pos-canvas"
+                                 style="display:none; position:relative; width:100%; height:180px; overflow:hidden; border-radius:12px; border:2px solid #e8d5c4; cursor:grab; background:#111; user-select:none;">
+                                <img id="pos-img" src="" alt=""
+                                     style="position:absolute; top:0; left:0; width:100%; height:auto; display:block; pointer-events:none;">
+                                <!-- Overlay -->
+                                <div style="position:absolute; inset:0; pointer-events:none;">
+                                    <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center;">
+                                        <span id="ov-hint" style="background:rgba(0,0,0,0.55); color:#fff; font-size:12px; font-weight:600; padding:5px 12px; border-radius:999px;">✥ Drag to reposition</span>
+                                    </div>
+                                </div>
+                                <!-- Buttons overlaid at bottom -->
+                                <div style="position:absolute; bottom:12px; left:0; right:0; display:flex; justify-content:center; gap:8px; z-index:10;">
+                                    <button type="button" onclick="document.getElementById('image').click()"
+                                            style="background:rgba(255,255,255,0.92); color:#724e2c; border:none; padding:7px 16px; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer;">
+                                        📷 Replace
+                                    </button>
+                                </div>
+                            </div>
+                            <p id="pos-label" style="font-size:11px; color:#9e8a78; margin:6px 0 0; text-align:center; display:none;">Focus: center center</p>
+                            @error('image')<p class="error">{{ $message }}</p>@enderror
+                        </div>
                         <!-- Availability -->
-                        <div class="mb-8">
-                            <label class="flex items-center cursor-pointer">
-                                <input type="checkbox" name="is_available" value="1" {{ old('is_available', true) ? 'checked' : '' }}
-                                       class="w-5 h-5 text-indigo-600 border-2 border-gray-300 rounded focus:ring-2 focus:ring-indigo-500">
-                                <span class="ml-3 text-sm font-semibold text-gray-700">Item is available for ordering</span>
+                        <div class="field">
+                            <label>Availability</label>
+                            <label class="avail-toggle" onclick="toggleAvail()">
+                                <input type="checkbox" name="is_available" id="is_available" value="1" {{ old('is_available', true) ? 'checked' : '' }}>
+                                <div class="toggle-track {{ old('is_available', true) ? 'on' : '' }}" id="avail-track">
+                                    <div class="toggle-thumb"></div>
+                                </div>
+                                <span class="avail-label" id="avail-label">{{ old('is_available', true) ? 'Available for ordering' : 'Not available' }}</span>
                             </label>
                         </div>
 
-                        <!-- Submit Buttons -->
-                        <div class="flex space-x-4">
-                            <button type="submit" 
-                                    class="flex-1 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-6 py-3 rounded-lg font-semibold shadow-lg transition transform hover:scale-105">
-                                Add Menu Item
-                            </button>
-                            <a href="{{ route('vendor.menu-items.index') }}" 
-                               class="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition">
-                                Cancel
-                            </a>
+                        <div class="btn-row">
+                            <button type="submit" class="btn-primary">Add Menu Item</button>
+                            <a href="{{ route('vendor.menu-items.index') }}" class="btn-cancel">Cancel</a>
                         </div>
                     </form>
                 </div>
             </div>
 
-            <!-- Quick Templates Section -->
-            <div class="lg:col-span-1">
-                <div class="bg-white rounded-xl shadow-lg p-6 sticky top-4">
-                    <h3 class="text-xl font-bold text-gray-900 mb-4">📋 Quick Templates</h3>
-                    <p class="text-sm text-gray-600 mb-4">Click to use a template</p>
-                    
-                    <div class="space-y-3">
-                        <!-- Rice Meal Template -->
-                        <button onclick="useTemplate('Chicken Adobo', 'Classic Filipino chicken adobo with rice', '65.00', 'Rice Meals')"
-                                class="w-full text-left p-4 bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-200 rounded-lg hover:shadow-md transition">
-                            <p class="font-semibold text-gray-900">🍛 Rice Meal</p>
-                            <p class="text-xs text-gray-600 mt-1">Chicken Adobo - ₱65</p>
-                        </button>
+        </div>
 
-                        <!-- Breakfast Template -->
-                        <button onclick="useTemplate('Tapsilog', 'Beef tapa, sinangag, and itlog', '75.00', 'Breakfast')"
-                                class="w-full text-left p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-lg hover:shadow-md transition">
-                            <p class="font-semibold text-gray-900">🍳 Breakfast</p>
-                            <p class="text-xs text-gray-600 mt-1">Tapsilog - ₱75</p>
-                        </button>
+        <!-- Right: Preview + Category Manager -->
+        <div style="display:flex; flex-direction:column; gap:20px;">
 
-                        <!-- Snack Template -->
-                        <button onclick="useTemplate('Lumpia Shanghai', 'Crispy spring rolls (5 pcs)', '35.00', 'Snacks')"
-                                class="w-full text-left p-4 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-lg hover:shadow-md transition">
-                            <p class="font-semibold text-gray-900">🥟 Snack</p>
-                            <p class="text-xs text-gray-600 mt-1">Lumpia - ₱35</p>
-                        </button>
-
-                        <!-- Beverage Template -->
-                        <button onclick="useTemplate('Iced Coffee', 'Cold brewed coffee with milk', '35.00', 'Beverages')"
-                                class="w-full text-left p-4 bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-200 rounded-lg hover:shadow-md transition">
-                            <p class="font-semibold text-gray-900">☕ Beverage</p>
-                            <p class="text-xs text-gray-600 mt-1">Iced Coffee - ₱35</p>
-                        </button>
-
-                        <!-- Dessert Template -->
-                        <button onclick="useTemplate('Halo-Halo', 'Filipino mixed dessert with ice', '50.00', 'Desserts')"
-                                class="w-full text-left p-4 bg-gradient-to-r from-red-50 to-pink-50 border-2 border-red-200 rounded-lg hover:shadow-md transition">
-                            <p class="font-semibold text-gray-900">🍨 Dessert</p>
-                            <p class="text-xs text-gray-600 mt-1">Halo-Halo - ₱50</p>
-                        </button>
-                    </div>
-
-                    <div class="mt-6 p-4 bg-indigo-50 rounded-lg border border-indigo-200">
-                        <p class="text-xs text-indigo-800">
-                            <strong>💡 Tip:</strong> Templates help you add items faster. You can modify the details after clicking!
-                        </p>
+            <!-- Live card preview -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">👁️</div>
+                    <div><p class="card-title">Live Preview</p><p class="card-subtitle">How it looks to students</p></div>
+                </div>
+                <div class="card-body" style="padding-top:14px;">
+                    <div class="preview-card">
+                        <div style="position:relative;">
+                            <img id="preview-img" class="preview-img" src="" alt="" style="display:none;">
+                            <div id="preview-placeholder" class="preview-img-placeholder" style="background:#fdf0e6;">🍽️</div>
+                            <span id="preview-avail-badge" class="preview-avail" style="background:#22c55e; color:#fff;">AVAILABLE</span>
+                            <div style="position:absolute; bottom:0; left:0; right:0; background:linear-gradient(to top,rgba(0,0,0,0.65),transparent); padding:12px;">
+                                <p id="preview-name-overlay" style="color:#fff; font-size:15px; font-weight:700; margin:0;">Item Name</p>
+                            </div>
+                        </div>
+                        <div class="preview-body">
+                            <p id="preview-cat" class="preview-cat">Category</p>
+                            <p id="preview-desc" class="preview-desc">Description will appear here...</p>
+                            <p id="preview-price" class="preview-price">₱0.00</p>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Category manager -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🏷️</div>
+                    <div><p class="card-title">My Categories</p><p class="card-subtitle">Create and reuse your own categories</p></div>
+                </div>
+                <div class="card-body">
+                    <div class="cat-manager-input">
+                        <input type="text" id="new-cat-input" placeholder="New category name..." onkeydown="if(event.key==='Enter'){event.preventDefault();addCategory();}">
+                        <button type="button" class="cat-add-btn" onclick="addCategory()">+ Add</button>
+                    </div>
+                    <div class="cat-list" id="cat-manager-list">
+                        @foreach($existingCategories as $cat)
+                            <span class="cat-item">
+                                <button type="button" class="cat-use-btn" onclick="setCategory('{{ addslashes($cat) }}')">{{ $cat }}</button>
+                                <button type="button" onclick="removeCategory(this, '{{ addslashes($cat) }}')" title="Remove">✕</button>
+                            </span>
+                        @endforeach
+                    </div>
+                    <p style="font-size:11px; color:#9e8a78; margin:10px 0 0;">Click a category to use it. Categories are shared across your menu items.</p>
+                </div>
+            </div>
+
         </div>
     </div>
 
     <script>
+        // ── Live preview ──
+        function updatePreview() {
+            var name  = document.getElementById('name').value || 'Item Name';
+            var desc  = document.getElementById('description').value || 'Description will appear here...';
+            var price = parseFloat(document.getElementById('price').value) || 0;
+            var cat   = document.getElementById('category').value || 'Category';
+            document.getElementById('preview-name-overlay').textContent = name;
+            document.getElementById('preview-cat').textContent = cat;
+            document.getElementById('preview-desc').textContent = desc;
+            document.getElementById('preview-price').textContent = '₱' + price.toFixed(2);
+        }
+
+        function setCategory(cat) {
+            document.getElementById('category').value = cat;
+            updatePreview();
+        }
+
+        // ── Image preview + position adjuster ──
         function previewImage(input) {
-            const preview = document.getElementById('image-preview');
-            const filename = document.getElementById('image-filename');
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = e => {
-                    preview.src = e.target.result;
-                    preview.classList.remove('hidden');
-                    filename.textContent = input.files[0].name;
-                };
-                reader.readAsDataURL(input.files[0]);
+            if (!input.files || !input.files[0]) return;
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var src = e.target.result;
+                // Hide upload trigger, show canvas
+                document.getElementById('upload-trigger').style.display = 'none';
+                document.getElementById('pos-canvas').style.display = 'block';
+                document.getElementById('pos-label').style.display = 'block';
+                // Update live preview card
+                var previewImg = document.getElementById('preview-img');
+                if (previewImg) { previewImg.src = src; previewImg.style.display = 'block'; }
+                var ph = document.getElementById('preview-placeholder');
+                if (ph) ph.style.display = 'none';
+                // Init pan adjuster
+                if (window.initPositionAdjuster) window.initPositionAdjuster(src, 'center center');
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+
+        // ── Drag-to-reposition (pan image inside viewport) ──
+        (function() {
+            var isDragging = false;
+            var startX, startY, imgOffsetX, imgOffsetY;
+            var canvas, posImg, posInput, posLabel;
+
+            document.addEventListener('DOMContentLoaded', function() {
+                canvas   = document.getElementById('pos-canvas');
+                posImg   = document.getElementById('pos-img');
+                posInput = document.getElementById('image_position');
+                posLabel = document.getElementById('pos-label');
+                if (!canvas) return;
+                canvas.addEventListener('mousedown',  startDrag);
+                canvas.addEventListener('touchstart', startDrag, { passive: false });
+                document.addEventListener('mousemove',  doDrag);
+                document.addEventListener('touchmove',  doDrag, { passive: false });
+                document.addEventListener('mouseup',   stopDrag);
+                document.addEventListener('touchend',  stopDrag);
+            });
+
+            function scaleImg() {
+                var ch = canvas.offsetHeight, cw = canvas.offsetWidth;
+                var ratio = posImg.naturalWidth / posImg.naturalHeight;
+                var newH = Math.max(ch, cw / ratio);
+                var newW = newH * ratio;
+                posImg.style.width  = newW + 'px';
+                posImg.style.height = newH + 'px';
+                posImg.style.left   = Math.round((cw - newW) / 2) + 'px';
+                posImg.style.top    = Math.round((ch - newH) / 2) + 'px';
+                imgOffsetX = posImg.offsetLeft;
+                imgOffsetY = posImg.offsetTop;
+            }
+
+            function getClient(e) { return e.touches ? { x: e.touches[0].clientX, y: e.touches[0].clientY } : { x: e.clientX, y: e.clientY }; }
+
+            function startDrag(e) {
+                if (e.cancelable) e.preventDefault();
+                isDragging = true; canvas.style.cursor = 'grabbing';
+                var c = getClient(e); startX = c.x; startY = c.y;
+                imgOffsetX = posImg.offsetLeft; imgOffsetY = posImg.offsetTop;
+            }
+
+            function doDrag(e) {
+                if (!isDragging) return; if (e.cancelable) e.preventDefault();
+                var c = getClient(e);
+                var newX = imgOffsetX + (c.x - startX);
+                var newY = imgOffsetY + (c.y - startY);
+                var cw = canvas.offsetWidth, ch = canvas.offsetHeight;
+                var iw = posImg.offsetWidth, ih = posImg.offsetHeight;
+                newX = Math.min(0, Math.max(cw - iw, newX));
+                newY = Math.min(0, Math.max(ch - ih, newY));
+                posImg.style.left = newX + 'px'; posImg.style.top = newY + 'px';
+                var px = iw > cw ? Math.round((-newX / (iw - cw)) * 100) : 50;
+                var py = ih > ch ? Math.round((-newY / (ih - ch)) * 100) : 50;
+                var val = px + '% ' + py + '%';
+                posInput.value = val;
+                if (posLabel) posLabel.textContent = 'Focus: ' + px + '% ' + py + '%';
+                var pi = document.getElementById('preview-img');
+                if (pi) pi.style.objectPosition = val;
+            }
+
+            function stopDrag() { isDragging = false; if (canvas) canvas.style.cursor = 'grab'; }
+
+            window.initPositionAdjuster = function(src) {
+                posImg.src = src;
+                posImg.style.left = '0px'; posImg.style.top = '0px';
+                posImg.style.width = '100%'; posImg.style.height = 'auto';
+                posImg.onload = function() { scaleImg(); };
+            };
+        })();
+
+        // ── Availability toggle ──
+        function toggleAvail() {
+            var cb = document.getElementById('is_available');
+            var track = document.getElementById('avail-track');
+            var label = document.getElementById('avail-label');
+            var badge = document.getElementById('preview-avail-badge');
+            cb.checked = !cb.checked;
+            if (cb.checked) {
+                track.classList.add('on'); label.textContent = 'Available for ordering';
+                badge.style.background = '#22c55e'; badge.textContent = 'AVAILABLE';
             } else {
-                preview.classList.add('hidden');
-                preview.src = '';
-                filename.textContent = 'JPEG, PNG, GIF, WebP — max 2MB';
+                track.classList.remove('on'); label.textContent = 'Not available';
+                badge.style.background = '#ef4444'; badge.textContent = 'UNAVAILABLE';
             }
         }
 
-        function useTemplate(name, description, price, category) {
-            document.getElementById('name').value = name;
-            document.getElementById('description').value = description;
-            document.getElementById('price').value = price;
-            document.getElementById('category').value = category;
-            
-            // Scroll to form
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            
-            // Highlight the name field
-            document.getElementById('name').focus();
-            document.getElementById('name').select();
+        // ── Category manager ──
+        var customCategories = @json($existingCategories->values());
+
+        function addCategory() {
+            var input = document.getElementById('new-cat-input');
+            var val = input.value.trim();
+            if (!val || customCategories.includes(val)) { input.value = ''; return; }
+            customCategories.push(val);
+            renderCategoryManager(); renderCategoryPills();
+            input.value = ''; setCategory(val);
+        }
+        function removeCategory(btn, cat) {
+            customCategories = customCategories.filter(function(c) { return c !== cat; });
+            renderCategoryManager(); renderCategoryPills();
+        }
+        function renderCategoryManager() {
+            var list = document.getElementById('cat-manager-list');
+            list.innerHTML = customCategories.map(function(cat) {
+                return '<span class="cat-item"><button type="button" class="cat-use-btn" onclick="setCategory(\'' + cat.replace(/'/g,"\\'") + '\')">' + cat + '</button><button type="button" onclick="removeCategory(this,\'' + cat.replace(/'/g,"\\'") + '\')" title="Remove">✕</button></span>';
+            }).join('');
+        }
+        function renderCategoryPills() {
+            var pills = document.getElementById('cat-pills');
+            if (!pills) return;
+            pills.innerHTML = customCategories.map(function(cat) {
+                return '<button type="button" class="cat-pill" onclick="setCategory(\'' + cat.replace(/'/g,"\\'") + '\')">' + cat + '</button>';
+            }).join('');
         }
     </script>
 </body>
